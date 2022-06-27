@@ -6,14 +6,15 @@ import os
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))  
 
 # default url prefix
+# TODO: implement the default Blueprint
 URL_PREFIX = '/api/v1'
 
 # Define the SQLite database
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
 SQLALCHEMY_DATABASE_CONNECT_OPTIONS = {}
 
-# TODO: WORK IN PROGRESS
 # Define the Mongo database
+# TODO: implement connection
 MONGO_DATABASE_URI = 'mongodb://weddingshow-mongo5/'
 MONGO_DATABASE_NAME = 'weddingshow'
 
