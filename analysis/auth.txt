@@ -1,0 +1,7 @@
+flows:
+  front is loaded or re-loaded and check if the instance is authenticated
+    if it is not authenticated redirect to welcome/login page
+    if it is already authenticated redirect to the weddings list (weddings which user has access)
+
+api end-points / methods:
+  - GET, /user: load logged user's info, also used to check if it is authenticated, returns 401 if not.
