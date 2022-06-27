@@ -1,3 +1,4 @@
+import auth from './auth'
 
 const routes = [
   {
@@ -7,6 +8,8 @@ const routes = [
       { path: '', component: () => import('pages/IndexPage.vue') }
     ]
   },
+
+  ...auth,
 
   // Always leave this as last one,
   // but you can also remove it

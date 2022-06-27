@@ -1,5 +1,5 @@
-#FROM python:latest
-FROM python:2.7
+#FROM python:2.7
+FROM python:latest
 # https://stackoverflow.com/questions/48561981/activate-python-virtualenv-in-dockerfile
 RUN mkdir /weddingshow
 
@@ -11,10 +11,13 @@ RUN mkdir /weddingshow
 
 # debug: https://pypi.org/project/ipdb/
 RUN pip install ipdb
-
-# dependencies
+# flask
 RUN pip install flask flask-wtf email_validator flask-sqlalchemy
+# websockets
+RUN pip install python-engineio python-socketio flask-socketio
+# mongodb
 RUN pip install pymongo
+# aws
 RUN pip install boto3
 
 # requirements notes:
