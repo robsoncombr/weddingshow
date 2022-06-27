@@ -10,4 +10,5 @@ docker network create weddingshow
 ```
 ##### x. Create an AWS S3 bucket
 ##### x. Build and Run back-end docker
-##### x. Run db docker
+##### x. Database
+See [DB Preparation](https://github.com/robsoncombr/weddingshow/tree/main/db-mongo).
