@@ -35,10 +35,11 @@ def signin():
         flash('Wrong email or password', 'error-message')
     return render_template("auth/signin.html", form=form)
 
+
 @mod_auth.route('/user/', methods=['GET', 'POST'])
 def user():
     if 'username' not in session:
-        return 'TODO: return 401 http code'
+        return 'Unauthorized', 401
     if request.method == 'GET':
         return session['username']
     return 'TODO: implement POST'
