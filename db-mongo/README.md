@@ -1,5 +1,5 @@
 
-# The Wedding Show - Database
+## Wedding Show - Database
 
 We will run a MongoDB instance using Docker
 
