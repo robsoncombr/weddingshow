@@ -13,7 +13,9 @@ RUN mkdir /weddingshow
 RUN pip install ipdb
 
 # dependencies
-RUN pip install flask flask-wtf email_validator flask-sqlalchemy pymongo
+RUN pip install flask flask-wtf email_validator flask-sqlalchemy
+RUN pip install pymongo
+RUN pip install boto3
 
 # requirements notes:
 # generate project requirements: pip freeze > requirements.txt
