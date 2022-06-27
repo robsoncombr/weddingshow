@@ -1,4 +1,5 @@
 #FROM python:2.7
+# decided to use latest to implement websockets
 FROM python:latest
 # https://stackoverflow.com/questions/48561981/activate-python-virtualenv-in-dockerfile
 RUN mkdir /weddingshow
@@ -13,8 +14,8 @@ RUN mkdir /weddingshow
 RUN pip install ipdb
 # flask
 RUN pip install flask flask-wtf email_validator flask-sqlalchemy
-# websockets
-RUN pip install python-engineio python-socketio flask-socketio
+# websocket
+RUN pip install flask-sock
 # mongodb
 RUN pip install pymongo
 # aws

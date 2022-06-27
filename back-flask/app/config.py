@@ -12,6 +12,8 @@ URL_PREFIX = '/api/v1'
 # Define the SQLite database
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
 SQLALCHEMY_DATABASE_CONNECT_OPTIONS = {}
+# /usr/local/lib/python3.10/site-packages/flask_sqlalchemy/__init__.py:872: FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds significant overhead and will be disabled by default in the future.  Set it to True or False to suppress this warning.
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Define the Mongo database
 # TODO: implement connection

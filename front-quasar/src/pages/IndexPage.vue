@@ -1,5 +1,11 @@
 <template>
   <q-page class="q-mt-xl">
+    <div id="log"></div>
+    <br>
+    <form id="form">
+      <label for="text">Input: </label>
+      <input type="text" id="text" autofocus>
+    </form>
     <div class="row">
       <div class="col-xs-12 text-center">
         <img
@@ -44,5 +50,27 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "IndexPage",
+
+  mounted() {
+    const log = (text, color) => {
+      document.getElementById(
+        "log"
+      ).innerHTML += `<span style="color: ${color}">${text}</span><br>`;
+    };
+
+    // const socket = new WebSocket("ws://" + location.host + "/echo");
+    const socket = new WebSocket("ws://" + location.hostname + ":5000/ws/echo");
+
+    socket.addEventListener("message", (ev) => {
+      log("<<< " + ev.data, "blue");
+    });
+    document.getElementById("form").onsubmit = (ev) => {
+      ev.preventDefault();
+      const textField = document.getElementById("text");
+      log(">>> " + textField.value, "red");
+      socket.send(textField.value);
+      textField.value = "";
+    };
+  },
 });
 </script>

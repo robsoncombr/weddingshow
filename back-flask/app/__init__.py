@@ -1,6 +1,7 @@
 # Import flask and template operators
 from flask import Flask, render_template
-
+# import websocket
+from flask_sock import Sock
 # Import SQLAlchemy
 from flask_sqlalchemy import SQLAlchemy
 
@@ -10,13 +11,22 @@ app = Flask(__name__)
 # Configurations
 app.config.from_object('config')
 
+# websocket
+sock = Sock(app)
+@sock.route('/ws/echo')
+def ws_echo(sock):
+    while True:
+        data = sock.receive()
+        sock.send(data)
+
 # Define the database object which is imported
 # by modules and controllers
 db = SQLAlchemy(app)
 
 @app.route('/')
 def index():
-    return 'index'
+    #return 'index'
+    return render_template('index.html')
 
 # Sample HTTP error handling
 @app.errorhandler(404)

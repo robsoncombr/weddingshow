@@ -1,13 +1,19 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header bordered style="height: 80px; background-color: #faf9f8;">
-      <q-toolbar style="min-height: unset;">
+    <q-header bordered style="height: 80px; background-color: #faf9f8">
+      <q-toolbar style="min-height: unset">
         <q-btn
           flat
           dense
           icon="menu"
           aria-label="Menu"
-          style="width: 45px; height: 45px; background-color: #d1aa62; margin-bottom: 8px; padding: 8px;"
+          style="
+            width: 45px;
+            height: 45px;
+            background-color: #d1aa62;
+            margin-bottom: 8px;
+            padding: 8px;
+          "
           @click="toggleLeftDrawer"
         />
 
@@ -107,10 +113,6 @@ export default defineComponent({
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
     };
-  },
-
-  created() {
-    console.debug("MainLayout created");
   },
 });
 </script>
