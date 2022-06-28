@@ -14,20 +14,22 @@ from flask_mongoengine import MongoEngine
 # Define the WSGI application object
 app = Flask(__name__)
 
-# Configurations
+# configurations
 app.config.from_object('config')
 
 # cors
 CORS(app)
 
 # websocket
-app.config['SOCK_SERVER_OPTIONS'] = {'ping_interval': 25} # TODO: move to config.py
 sock = Sock(app)
 @sock.route('/ws/echo')
 def ws_echo(sock):
     while True:
         data = sock.receive()
         sock.send(data)
+@app.route('/ws')
+def ws_index():
+    return render_template('ws-demo.html')
 
 # mongoengine
 db = MongoEngine(app)
@@ -38,7 +40,6 @@ db = MongoEngine(app)
 
 @app.route('/')
 def index():
-    #return 'index'
     return render_template('index.html')
 
 # Sample HTTP error handling
