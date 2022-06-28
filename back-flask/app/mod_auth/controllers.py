@@ -31,12 +31,12 @@ def signup():
     try:
         user = models.User.objects.get(email=email)
     except models.User.DoesNotExist:
-        user = models.User(email=email, password=generate_password_hash(password))
+        user = models.User(name=name, email=email, password=generate_password_hash(password))
         user.save()
         user = user.to_mongo()
         user['_id'] = str(user['_id'])
         del user['password']
-        return user, 201
+        #return user, 201
         return 'User created', 201
     return 'User already exists', 400
 
