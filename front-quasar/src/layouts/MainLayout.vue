@@ -3,7 +3,7 @@
     <q-header
       bordered
       style="height: 80px; background-color: #faf9f8"
-      v-if="$state?.user"
+      v-if="$auth?.user"
     >
       <q-toolbar style="min-height: unset">
         <q-btn
@@ -37,7 +37,7 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
-      v-if="$state?.user"
+      v-if="$auth?.user"
     >
       <q-list>
         <q-item-label header> Menu </q-item-label>
@@ -56,8 +56,7 @@ import { defineComponent, getCurrentInstance, reactive, ref } from "vue";
 export default defineComponent({
   name: "MainLayout",
 
-  components: {
-  },
+  components: {},
 
   setup() {
     const app = getCurrentInstance();
@@ -76,18 +75,21 @@ export default defineComponent({
     const auth = reactive({
       user: null,
       loadUser: async () => {
-        app.appContext.config.globalProperties.$auth.profiles =
-          await app.appContext.config.globalProperties.$stores.$api
+        app.appContext.config.globalProperties.$auth.user =
+          await app.appContext.config.globalProperties.$api
             .request({
-              url: "/auth/user",
-              operation: "list",
+              method: "GET",
+              url: "/auth/user/",
+              // headers: headers,
+              data: {},
             })
             .then((r) => {
-              return r.docs;
+              console.debug(r)
+              return r.data;
             })
             .catch((e) => {
-              this.$lib.$debug(e);
-              return [];
+              console.error(e);
+              return null;
             });
       },
     });
@@ -166,14 +168,16 @@ export default defineComponent({
     };
   },
 
-  created () {
+  created() {
     /*
     if (this.$env.isDev) {
       window.wedding = this
     }
     */
     // i will leave this instance in production for demonstration needs during the process, but it is not recommended for real production
-    window.wedding = this
+    window.wedding = this;
+
+    this.$auth.loadUser()
   },
 });
 </script>

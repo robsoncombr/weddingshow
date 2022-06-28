@@ -25,6 +25,8 @@ RUN pip install flask-sock
 # mongodb
 #RUN pip install pymongo # I have decided to use MongoEngine instead of pymongo
 RUN pip install flask-mongoengine
+# api
+RUN pip install flask-cors pyjwt
 # aws
 RUN pip install boto3
 

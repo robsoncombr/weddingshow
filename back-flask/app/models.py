@@ -14,6 +14,7 @@ class Base(db.Document):
 class User(Base):
     meta = {'collection': 'users'}
     email = db.StringField(required=True)
+    password = db.StringField(required=True)
 
 
 class Wedding(Base):

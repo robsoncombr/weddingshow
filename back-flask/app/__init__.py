@@ -1,5 +1,7 @@
-# Import flask and template operators
+# import flask
 from flask import Flask, render_template
+# import cors
+from flask_cors import CORS
 # import session
 from flask_session import Session
 # import websocket
@@ -14,6 +16,9 @@ app = Flask(__name__)
 
 # Configurations
 app.config.from_object('config')
+
+# cors
+CORS(app)
 
 # websocket
 app.config['SOCK_SERVER_OPTIONS'] = {'ping_interval': 25} # TODO: move to config.py
