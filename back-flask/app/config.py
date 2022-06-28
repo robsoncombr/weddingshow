@@ -15,10 +15,12 @@ SQLALCHEMY_DATABASE_CONNECT_OPTIONS = {}
 # /usr/local/lib/python3.10/site-packages/flask_sqlalchemy/__init__.py:872: FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds significant overhead and will be disabled by default in the future.  Set it to True or False to suppress this warning.
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-# Define the Mongo database
-# TODO: implement connection
-MONGO_DATABASE_URI = 'mongodb://weddingshow-mongo5/'
-MONGO_DATABASE_NAME = 'weddingshow'
+# mongoengine definitions
+MONGODB_SETTINGS = {
+  'db':'weddingshow',
+  'host':'weddingshow-mongo5',
+  'port':27017
+}
 
 # Application threads. A common general assumption is
 # using 2 per available processor cores - to handle

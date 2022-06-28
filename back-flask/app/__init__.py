@@ -4,8 +4,10 @@ from flask import Flask, render_template
 from flask_session import Session
 # import websocket
 from flask_sock import Sock
+# import mongoengine
+from flask_mongoengine import MongoEngine
 # Import SQLAlchemy
-from flask_sqlalchemy import SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
 
 # Define the WSGI application object
 app = Flask(__name__)
@@ -22,9 +24,12 @@ def ws_echo(sock):
         data = sock.receive()
         sock.send(data)
 
+# mongoengine
+db = MongoEngine(app)
+
 # Define the database object which is imported
 # by modules and controllers
-db = SQLAlchemy(app)
+#db = SQLAlchemy(app)
 
 @app.route('/')
 def index():
@@ -46,4 +51,4 @@ app.register_blueprint(auth_module)
 
 # Build the database:
 # This will create the database file using SQLAlchemy
-db.create_all()
+#db.create_all()

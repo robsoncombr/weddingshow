@@ -14,7 +14,8 @@ from app.mod_auth.forms import LoginForm
 
 # Import module models (i.e. User)
 from app.mod_auth.models import User
-
+from datetime import datetime
+print(User(email="r@r.r",dt_updated=datetime.utcnow()).save())
 # Define the blueprint: 'auth', set its url prefix: app.url/auth
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
