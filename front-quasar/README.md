@@ -1,5 +1,5 @@
 
-## Wedding Show
+## Wedding Show - Front End
 For the front-end I have decided to user Quasar Framework instead of pure HTML+CSS or other combinations such as Bootstrap+jQuery, because I consider it more elegant and I have more than 6 years of experience using it. Still, I consider that it maintains the need for knowledge in VueJS, being a shortcut only for the visual part.
 #### References
 - [Quasar Framework](https://quasar.dev)

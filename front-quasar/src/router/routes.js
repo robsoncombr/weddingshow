@@ -1,4 +1,5 @@
 import auth from './auth'
+import weddings from './weddings'
 
 const routes = [
   {
@@ -10,6 +11,7 @@ const routes = [
   },
 
   ...auth,
+  ...weddings,
 
   // Always leave this as last one,
   // but you can also remove it
