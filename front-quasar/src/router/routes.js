@@ -1,5 +1,5 @@
 import auth from './auth'
-import weddings from './weddings'
+import wedding from './wedding'
 
 const routes = [
   {
@@ -11,7 +11,7 @@ const routes = [
   },
 
   ...auth,
-  ...weddings,
+  ...wedding,
 
   // Always leave this as last one,
   // but you can also remove it
