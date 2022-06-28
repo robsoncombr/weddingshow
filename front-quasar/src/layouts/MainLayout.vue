@@ -1,6 +1,8 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header bordered style="height: 80px; background-color: #faf9f8">
+  <q-layout view="hHh lpr fFf">
+    <q-header bordered style="height: 80px; background-color: #faf9f8"
+      v-if="$state?.user"
+    >
       <q-toolbar style="min-height: unset">
         <q-btn
           flat
@@ -29,7 +31,9 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered
+      v-if="$state?.user"
+    >
       <q-list>
         <q-item-label header> Essential Links </q-item-label>
 
