@@ -36,7 +36,7 @@ CSRF_ENABLED     = True
 
 # Use a secure, unique and absolutely secret key for
 # signing the data. 
-CSRF_SESSION_KEY = "secret"
+CSRF_SESSION_KEY = "fzgFxTZe3MgRax9V2K8y7KOSQHA9WRIVUeN4RVT9VdufoqlP1mMgxJwUwjenhZGSx3UUIvBmKNjaAWj1viMHbSOyo9uqcabS7Pb6c2Nsrgaf0fXEu80buJHr780omOIC"
 
 # Secret key for signing cookies
-SECRET_KEY = "secret"
+SECRET_KEY = "NN3WNCWWY4TWwR3wIpUVWw3d9uuV8qEo1ipkAHxvr6mW6qpNw73xH5zs1ge6vF1h1iIUqjQlCFZXwuE8o4yE3RxUZB5KQEVZdA7KbAgyOAlUK8JtUbeActwV1yr0h8XU"

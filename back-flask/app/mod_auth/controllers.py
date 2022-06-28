@@ -2,15 +2,13 @@
 from flask import Blueprint, jsonify, request, current_app, render_template, \
     flash, g, session, redirect, url_for
 
-from datetime import datetime, timedelta
-
-import jwt
-
 # import password / encryption helper tools
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Import the database object from the main app module
-from app import db, models
+from app import db, models, lib
+
+from app.lib import token_create
 
 # Import module forms
 from app.mod_auth.forms import LoginForm
@@ -39,7 +37,9 @@ def signup():
         user['_id'] = str(user['_id'])
         del user['password']
         #return user, 201
-        return 'User created', 201
+        #return 'User created', 201
+
+        return jsonify({ user: user, token: token_create(email=email) }), 200
     return 'User already exists', 400
 
 @mod_auth.route('/signin/', methods=['GET', 'POST'])
@@ -56,20 +56,7 @@ def signin():
     user['_id'] = str(user['_id'])
     if check_password_hash(user['password'], password):
         del user['password']
-        '''
-        ref: https://pyjwt.readthedocs.io/en/stable/usage.html
-        I create the JWT token using PyJWT (as jwt) by encoding a dictionary containing the following:
-        sub - the subject of the jwt, which in this case is the user's email
-        iat - the time the jwt was issued at
-        exp - is the moment the jwt should expire, which is 30 minutes after issuing in this case
-        '''
-        token = jwt.encode({
-            'sub': email,
-            'iat':datetime.utcnow(),
-            'exp': datetime.utcnow() + timedelta(minutes=30)},
-            current_app.config['SECRET_KEY'], algorithm='HS256')
-        #print(jwt.decode(token, current_app.config['SECRET_KEY'], 'HS256'))
-        return jsonify({ 'token': token }), 200
+        return token_create(email=email), 200
     return 'Wrong password', 400
 
 @mod_auth.route('/user/', methods=['GET', 'POST'])
