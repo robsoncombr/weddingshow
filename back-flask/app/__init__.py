@@ -1,5 +1,7 @@
 # Import flask and template operators
 from flask import Flask, render_template
+# import session
+from flask_session import Session
 # import websocket
 from flask_sock import Sock
 # Import SQLAlchemy
@@ -12,6 +14,7 @@ app = Flask(__name__)
 app.config.from_object('config')
 
 # websocket
+app.config['SOCK_SERVER_OPTIONS'] = {'ping_interval': 25} # TODO: move to config.py
 sock = Sock(app)
 @sock.route('/ws/echo')
 def ws_echo(sock):

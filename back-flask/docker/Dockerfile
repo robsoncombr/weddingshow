@@ -1,6 +1,7 @@
 #FROM python:2.7
 # decided to use latest to implement websockets
 FROM python:latest
+
 # https://stackoverflow.com/questions/48561981/activate-python-virtualenv-in-dockerfile
 RUN mkdir /weddingshow
 
@@ -10,14 +11,20 @@ RUN mkdir /weddingshow
 #RUN cd /weddingshow; virtualenv env
 #RUN cd /weddingshow; ./env/bin/pip install flask flask-wtf flask-sqlalchemy pymongo
 
+# update pip version (usually the one delivered with the image is old)
+RUN python -m pip install --upgrade pip
+
 # debug: https://pypi.org/project/ipdb/
 RUN pip install ipdb
 # flask
 RUN pip install flask flask-wtf email_validator flask-sqlalchemy
-# websocket
+# flask server side session - https://flask-session.readthedocs.io/en/latest
+RUN pip install flask-session
+# flask websocket server - https://flask-sock.readthedocs.io/en/latest
 RUN pip install flask-sock
 # mongodb
-RUN pip install pymongo
+#RUN pip install pymongo # I have decided to use MongoEngine instead of pymongo
+RUN pip install flask-mongoengine
 # aws
 RUN pip install boto3
 
