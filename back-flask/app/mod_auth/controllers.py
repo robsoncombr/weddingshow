@@ -6,9 +6,9 @@ from flask import Blueprint, jsonify, request, current_app, render_template, \
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Import the database object from the main app module
-from app import db, models, lib
+from app import models
 
-from app.lib import token_create
+from app.lib import token_create, token_required
 
 # Import module forms
 from app.mod_auth.forms import LoginForm
@@ -60,9 +60,8 @@ def signin():
     return 'Wrong password', 400
 
 @mod_auth.route('/user/', methods=['GET', 'POST'])
-def user():
-    if 'username' not in session:
-        return 'Unauthorized', 401
+@token_required
+def user(current_user):
     if request.method == 'GET':
-        return session['username']
-    return 'TODO: implement POST'
+        return current_user, 200
+    return 'POST'
