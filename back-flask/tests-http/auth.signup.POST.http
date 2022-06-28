@@ -1,0 +1,7 @@
+POST http://192.168.16.200:5000/auth/signin
+Content-Type: application/json
+
+{
+    "email": "r@r.r",
+    "password": "test"
+}

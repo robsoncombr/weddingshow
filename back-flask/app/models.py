@@ -8,12 +8,13 @@ from datetime import datetime
 class Base(db.Document):
     meta = {'abstract': True, 'allow_inheritance': True}
     dt_created = db.DateTimeField(required=True, default=datetime.utcnow())
-    dt_updated = db.DateTimeField(required=True)
+    dt_updated = db.DateTimeField(required=True, default=datetime.utcnow())
 
 
 class User(Base):
     meta = {'collection': 'users'}
-    email = db.StringField(required=True)
+    name = db.StringField(required=True)
+    email = db.StringField(required=True, unique=True)
     password = db.StringField(required=True)
 
 
