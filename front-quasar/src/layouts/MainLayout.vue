@@ -1,6 +1,8 @@
 <template>
   <q-layout view="hHh lpr fFf">
-    <q-header bordered style="height: 80px; background-color: #faf9f8"
+    <q-header
+      bordered
+      style="height: 80px; background-color: #faf9f8"
       v-if="$state?.user"
     >
       <q-toolbar style="min-height: unset">
@@ -31,17 +33,14 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
       v-if="$state?.user"
     >
       <q-list>
-        <q-item-label header> Essential Links </q-item-label>
-
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <q-item-label header> Menu </q-item-label>
       </q-list>
     </q-drawer>
 
@@ -52,71 +51,129 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
-import EssentialLink from "components/EssentialLink.vue";
-
-const linksList = [
-  {
-    title: "Docs",
-    caption: "quasar.dev",
-    icon: "school",
-    link: "https://quasar.dev",
-  },
-  {
-    title: "Github",
-    caption: "github.com/quasarframework",
-    icon: "code",
-    link: "https://github.com/quasarframework",
-  },
-  {
-    title: "Discord Chat Channel",
-    caption: "chat.quasar.dev",
-    icon: "chat",
-    link: "https://chat.quasar.dev",
-  },
-  {
-    title: "Forum",
-    caption: "forum.quasar.dev",
-    icon: "record_voice_over",
-    link: "https://forum.quasar.dev",
-  },
-  {
-    title: "Twitter",
-    caption: "@quasarframework",
-    icon: "rss_feed",
-    link: "https://twitter.quasar.dev",
-  },
-  {
-    title: "Facebook",
-    caption: "@QuasarFramework",
-    icon: "public",
-    link: "https://facebook.quasar.dev",
-  },
-  {
-    title: "Quasar Awesome",
-    caption: "Community Quasar projects",
-    icon: "favorite",
-    link: "https://awesome.quasar.dev",
-  },
-];
+import { defineComponent, getCurrentInstance, reactive, ref } from "vue";
 
 export default defineComponent({
   name: "MainLayout",
 
   components: {
-    EssentialLink,
   },
 
   setup() {
+    const app = getCurrentInstance();
+
+    const $env = {
+      // $dev atualmente baseado no hostname
+      isDev: [
+        "localhost",
+        "127.0.0.1",
+        "192.168.0.200",
+        "192.168.16.200",
+      ].includes(location.hostname),
+    };
+    app.appContext.config.globalProperties.$env = $env;
+
+    const auth = reactive({
+      user: null,
+      loadUser: async () => {
+        app.appContext.config.globalProperties.$auth.profiles =
+          await app.appContext.config.globalProperties.$stores.$api
+            .request({
+              url: "/auth/user",
+              operation: "list",
+            })
+            .then((r) => {
+              return r.docs;
+            })
+            .catch((e) => {
+              this.$lib.$debug(e);
+              return [];
+            });
+      },
+    });
+    app.appContext.config.globalProperties.$auth = auth;
+
+    const state = reactive({
+      data: {},
+      $reset(data = {}) {
+        app.appContext.config.globalProperties.$lib.setWith(
+          app.appContext.config.globalProperties.$state,
+          "data",
+          data
+        );
+      },
+      $set(target, value = {}) {
+        if (!target) {
+          app.appContext.config.globalProperties.$lib.$debug(
+            "state.$set() !target"
+          );
+        } else {
+          app.appContext.config.globalProperties.$lib.setWith(
+            app.appContext.config.globalProperties.$state,
+            `data.${target}`,
+            value
+          );
+        }
+      },
+      $get(target, defaultValue = null) {
+        if (!target) {
+          return app.appContext.config.globalProperties.$lib.$debug(
+            "state.$get() !target"
+          );
+        } else {
+          return app.appContext.config.globalProperties.$lib.$get(
+            app.appContext.config.globalProperties.$state,
+            `data.${target}`,
+            defaultValue
+          );
+        }
+      },
+      //
+      loading: {},
+      $doLoading(target = app.appContext.config.globalProperties.$route.path) {
+        app.appContext.config.globalProperties.$lib.setWith(
+          app.appContext.config.globalProperties.$state,
+          `loading.${target}`,
+          true
+        );
+      },
+      $isLoading(target = app.appContext.config.globalProperties.$route.path) {
+        return app.appContext.config.globalProperties.$lib.$get(
+          app.appContext.config.globalProperties.$state,
+          `loading.${target}`,
+          false
+        );
+      },
+      $doneLoading(
+        target = app.appContext.config.globalProperties.$route.path
+      ) {
+        app.appContext.config.globalProperties.$lib.setWith(
+          app.appContext.config.globalProperties.$state,
+          `loading.${target}`,
+          false
+        );
+      },
+    });
+    app.appContext.config.globalProperties.$state = state;
+
     const leftDrawerOpen = ref(false);
 
     return {
-      essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
     };
+  },
+
+  created () {
+    /*
+    if (this.$env.isDev) {
+      window.wedding = this
+    }
+    */
+    // i will leave this instance in production for demonstration needs during the process, but it is not recommended for real production
+    window.wedding = this
   },
 });
 </script>
