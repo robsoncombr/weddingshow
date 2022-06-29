@@ -1,5 +1,5 @@
 GET http://192.168.16.200:5000/auth/user
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyQHIuciIsImlhdCI6MTY1NjQ1NjgwNSwiZXhwIjoxNjU2NDY0MDA1fQ.XVA4ZWwaOBDQGps3xfYgeQ3J0nFbj7y1RcBnM6HZw54
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyQHIuciIsImlhdCI6MTY1NjUwMzY1MCwiZXhwIjoxNjU2NTEwODUwfQ.ExDBQJiDrh2Ot0eOQjsGO1tWMtk-mhwjhuKDllBao28
 
 {}

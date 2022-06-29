@@ -1,0 +1,50 @@
+** VALID
+
+HTTP/1.1 200 OK
+Server: Werkzeug/2.1.2 Python/3.10.5
+Date: Wed, 29 Jun 2022 11:54:20 GMT
+Content-Type: application/json
+Content-Length: 196
+Access-Control-Allow-Origin: *
+Connection: close
+
+{
+  "_cls": "User",
+  "_id": "62bb7df90c369f83cf2ce288",
+  "dt_created": "Tue, 28 Jun 2022 22:17:20 GMT",
+  "dt_updated": "Tue, 28 Jun 2022 22:17:20 GMT",
+  "email": "r@r.r",
+  "name": "r"
+}
+
+
+** MISSING OR INVALID
+
+HTTP/1.1 401 UNAUTHORIZED
+Server: Werkzeug/2.1.2 Python/3.10.5
+Date: Wed, 29 Jun 2022 11:53:21 GMT
+Content-Type: application/json
+Content-Length: 108
+Access-Control-Allow-Origin: *
+Connection: close
+
+{
+  "authenticated": false,
+  "message": "Invalid token. Registeration and / or authentication required"
+}
+
+
+** EXPIRED
+
+HTTP/1.1 401 UNAUTHORIZED
+Server: Werkzeug/2.1.2 Python/3.10.5
+Date: Wed, 29 Jun 2022 11:53:55 GMT
+Content-Type: application/json
+Content-Length: 88
+Access-Control-Allow-Origin: *
+Connection: close
+
+{
+  "authenticated": false,
+  "message": "Expired token. Reauthentication required."
+}
