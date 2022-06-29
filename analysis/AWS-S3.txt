@@ -1,0 +1,42 @@
+*** Created S3 Bucket - weddingshow.us-east-1
+
+arn:aws:s3:::weddingshow.us-east-1
+Reagion: US East (N. Virginia) us-east-1
+
+*** Created IAM User - weddingshow
+
+arn:aws:iam::151883640789:user/weddingshow
+
+Credential already configured inside .aws being ignored by GIT, see .gitignore
+
+*** ACL POLICY for IAM User to access the created S3 Bucket
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetBucketPublicAccessBlock",
+                "s3:GetBucketPolicyStatus",
+                "s3:GetAccountPublicAccessBlock",
+                "s3:ListAllMyBuckets",
+                "s3:GetBucketAcl",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "s3:ListBucket",
+            "Resource": "arn:aws:s3:::weddingshow.us-east-1"
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": "s3:*Object",
+            "Resource": "arn:aws:s3:::weddingshow.us-east-1/*"
+        }
+    ]
+}

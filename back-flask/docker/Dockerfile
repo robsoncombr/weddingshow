@@ -4,6 +4,7 @@ FROM python:latest
 
 # https://stackoverflow.com/questions/48561981/activate-python-virtualenv-in-dockerfile
 RUN mkdir /weddingshow
+WORKDIR /weddingshow
 
 # removed because it is already docker isolated
 # note: if used it is necessary to activate with: source ./env/bin/activate
@@ -28,12 +29,12 @@ RUN pip install flask-mongoengine
 # api
 RUN pip install flask-cors pyjwt
 # aws
-RUN pip install boto3
+RUN pip install boto3 awscli
 
 # requirements notes:
 # generate project requirements: pip freeze > requirements.txt
 # install project requirements: pip install -r requirements.txt
 
-WORKDIR /weddingshow
+#COPY /nuvial/weddingshow/back-flask/.aws /root
 
 CMD ["python", "run.py"]

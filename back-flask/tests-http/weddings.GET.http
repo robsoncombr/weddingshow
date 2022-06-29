@@ -1,0 +1,4 @@
+GET http://192.168.16.200:5000/weddings
+Content-Type: application/json
+
+{}

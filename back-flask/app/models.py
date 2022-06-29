@@ -24,12 +24,16 @@ class Wedding(Base):
     name = db.StringField(required=True)
 
 
+# TODO: important...
+# I'm using the user's email as the relationship key for demonstration and due to the time constraints.
+# The correct approach should be to send an invitation to user, that accepts or deny it after registration, if accepted the user's id should be the foreign key for the wedding acl record.
+#
 class WeddingAcl(Base):
     meta = {'collection': 'wedding_acls'}
     wedding = db.ReferenceField(Wedding)
     # user = db.ReferenceField(User)
     # decided to create the relation based on the e-mail only
-    user_email = db.StringField(required=True)
+    email_user = db.StringField(required=True)
     is_admin = db.BooleanField(required=True, default=False)
 
 
@@ -39,5 +43,5 @@ class File(Base):
 
 # small tests - development only
 # print(User(email="r@r.r",dt_updated=datetime.utcnow()).save())
-#print(Wedding(name="Casamento", dt_updated=datetime.utcnow()).save())
+#print(Wedding(name="Marriage", dt_updated=datetime.utcnow()).save())
 #print(File(wedding="62baf6fb4080c418a7064260", dt_updated=datetime.utcnow()).save())
