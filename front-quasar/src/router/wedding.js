@@ -1,5 +1,5 @@
 // all requests to the api will use this parameter as the id for the wedding
-const base_url = '/:wedding'
+const base_url = '/weddings/:wedding?'
 
 const routes = [
   {

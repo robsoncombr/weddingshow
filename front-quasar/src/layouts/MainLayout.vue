@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpr fFf">
+  <q-layout view="hHh lpr fFf" v-if="$state.$get('loadedUser')">
     <q-header
       bordered
       style="height: 80px; color: #d1aa62; background-color: #faf9f8"
@@ -150,10 +150,13 @@ export default defineComponent({
               console.error(e);
               return null;
             });
-          if (typeof cb === "function") {
-            cb(vm.$auth.user);
-          }
         }
+        //
+        if (typeof cb === "function") {
+          cb(vm.$auth.user);
+        }
+        //
+        vm.$state.$set('loadedUser', true)
       },
       refreshToken: async () => {
         vm.$auth.setToken();
@@ -190,9 +193,11 @@ export default defineComponent({
       },
       $set(target, value = {}) {
         if (!target) {
-          app.appContext.config.globalProperties.$lib.$debug(
+          /*
+          app.appContext.config.globalProperties.$lib.x(
             "state.$set() !target"
           );
+          */
         } else {
           app.appContext.config.globalProperties.$lib.setWith(
             app.appContext.config.globalProperties.$state,
@@ -203,9 +208,11 @@ export default defineComponent({
       },
       $get(target, defaultValue = null) {
         if (!target) {
+          /*
           return app.appContext.config.globalProperties.$lib.$debug(
             "state.$get() !target"
           );
+          */
         } else {
           return app.appContext.config.globalProperties.$lib.$get(
             app.appContext.config.globalProperties.$state,
@@ -261,6 +268,7 @@ export default defineComponent({
     // i will leave this instance in production for demonstration needs during the process, but it is not recommended for real production
     window.wedding = this;
 
+    // always load user info on create to initialize the ui
     this.$auth.loadUser();
   },
 });

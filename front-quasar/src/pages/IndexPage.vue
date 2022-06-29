@@ -61,7 +61,7 @@
           color="orange-1"
           class="row text-orange-10"
           style="width: 300px; height: 100px; margin: 20px"
-          @click="$router.push('/auth/signin')"
+          @click="$router.push('/weddings')"
         >
           <div class="col-xs-12" style="font-size: 15px">
             You are already logged in
@@ -69,7 +69,6 @@
           <div
             class="col-xs-12 text-bold bg-orange-2"
             style="padding: 8px; font-size: 14px"
-            @click="$router.push('/weddings')"
           >
             Go to Weddings Dashboard
           </div>
