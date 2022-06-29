@@ -59,6 +59,7 @@ export default defineComponent({
         })
         .catch((error) => {
           console.log(error); // debug
+          vm.$q.notify({ message: error?.response?.data, color: 'negative' });
           vm.$auth.logout();
         });
     };

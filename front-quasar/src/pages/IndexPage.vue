@@ -19,7 +19,9 @@
           control, privacy and security.
         </h5>
       </div>
-      <div class="col-xs-12 row justify-center" style="margin-top: 30px">
+      <div class="col-xs-12 row justify-center" style="margin-top: 30px"
+        v-if="!$auth?.isLogged()"
+      >
         <q-btn
           no-caps
           color="green"
@@ -40,6 +42,10 @@
           <div class="col-xs-12" style="font-size: 15px">I have an account</div>
           <div class="col-xs-12 text-bold bg-blue-5" style="padding: 8px; font-size: 14px">Login</div>
         </q-btn>
+      </div>
+      <div v-else>
+        a
+
       </div>
     </div>
   </q-page>

@@ -3,7 +3,7 @@
     <q-header
       bordered
       style="height: 80px; background-color: #faf9f8"
-      v-if="$auth?.user"
+      v-if="$auth?.isLogged()"
     >
       <q-toolbar style="min-height: unset">
         <q-btn
@@ -74,8 +74,11 @@ export default defineComponent({
     app.appContext.config.globalProperties.$env = $env;
 
     const auth = reactive({
-      user: null,
       token: null,
+      user: null,
+      isLogged: () => {
+        return vm.$auth.token && vm.$auth.user
+      },
       setToken: async (token = null) => {
         if (!token) {
           token = vm.$q.sessionStorage.getItem("weddingshow_access_token") ||
