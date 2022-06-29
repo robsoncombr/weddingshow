@@ -1,10 +1,10 @@
 <template>
   <q-page class="q-mt-xl">
     <div id="log"></div>
-    <br>
+    <br />
     <form id="form">
       <label for="text">Input: </label>
-      <input type="text" id="text" autofocus>
+      <input type="text" id="text" autofocus />
     </form>
     <div class="row">
       <div class="col-xs-12 text-center">
@@ -19,7 +19,9 @@
           control, privacy and security.
         </h5>
       </div>
-      <div class="col-xs-12 row justify-center" style="margin-top: 30px"
+      <div
+        class="col-xs-12 row justify-center"
+        style="margin-top: 30px"
         v-if="!$auth?.isLogged()"
       >
         <q-btn
@@ -30,7 +32,12 @@
           @click="$router.push('/auth/signup')"
         >
           <div class="col-xs-12" style="font-size: 15px">Need an account?</div>
-          <div class="col-xs-12 text-bold bg-green-5" style="padding: 8px; font-size: 14px">Register</div>
+          <div
+            class="col-xs-12 text-bold bg-green-5"
+            style="padding: 8px; font-size: 14px"
+          >
+            Register
+          </div>
         </q-btn>
         <q-btn
           no-caps
@@ -40,12 +47,33 @@
           @click="$router.push('/auth/signin')"
         >
           <div class="col-xs-12" style="font-size: 15px">I have an account</div>
-          <div class="col-xs-12 text-bold bg-blue-5" style="padding: 8px; font-size: 14px">Login</div>
+          <div
+            class="col-xs-12 text-bold bg-blue-5"
+            style="padding: 8px; font-size: 14px"
+          >
+            Login
+          </div>
         </q-btn>
       </div>
-      <div v-else>
-        a
-
+      <div class="col-xs-12 row justify-center" style="margin-top: 30px" v-else>
+        <q-btn
+          no-caps
+          color="orange-1"
+          class="row text-orange-10"
+          style="width: 300px; height: 100px; margin: 20px"
+          @click="$router.push('/auth/signin')"
+        >
+          <div class="col-xs-12" style="font-size: 15px">
+            You are already logged in
+          </div>
+          <div
+            class="col-xs-12 text-bold bg-orange-2"
+            style="padding: 8px; font-size: 14px"
+            @click="$router.push('/weddings')"
+          >
+            Go to Weddings Dashboard
+          </div>
+        </q-btn>
       </div>
     </div>
   </q-page>

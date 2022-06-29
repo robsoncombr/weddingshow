@@ -2,7 +2,7 @@
   <q-layout view="hHh lpr fFf">
     <q-header
       bordered
-      style="height: 80px; background-color: #faf9f8"
+      style="height: 80px; color: #d1aa62; background-color: #faf9f8"
       v-if="$auth?.isLogged()"
     >
       <q-toolbar style="min-height: unset">
@@ -14,6 +14,7 @@
           style="
             width: 45px;
             height: 45px;
+            color: #000000;
             background-color: #d1aa62;
             margin-bottom: 8px;
             padding: 8px;
@@ -29,7 +30,26 @@
           />
         </q-toolbar-title>
 
-        <div>&nbsp;</div>
+        <div>
+          <q-btn flat round>
+            <q-icon name="account_circle" style="font-size: 45px"></q-icon>
+            <q-popup-proxy>
+              <q-list dense style="min-width: 250px; padding-bottom: 8px">
+                <q-item-label header class="bg-grey-1 text-right text-bold">{{ $auth.user.email }}</q-item-label>
+                <q-separator spaced />
+                <q-item clickable v-ripple @click="$auth.logout(() => { $router.push('/') })">
+                  <q-item-section>
+                    <q-item-label>Sign Out</q-item-label>
+                  </q-item-section>
+                  <q-item-section thumbnail>
+                    <q-icon name="logout" class="text-red" style="font-size: 30px"></q-icon>
+                  </q-item-section>
+                </q-item>
+                <q-separator spaced />
+              </q-list>
+            </q-popup-proxy>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -40,7 +60,16 @@
       v-if="$auth?.user"
     >
       <q-list>
-        <q-item-label header> Menu </q-item-label>
+        <q-item-label header> Menu Map </q-item-label>
+        <q-item clickable to="/auth/signup">
+          <q-item-label> Auth / Register </q-item-label>
+        </q-item>
+        <q-item clickable to="/auth/signin">
+          <q-item-label> Auth / Login </q-item-label>
+        </q-item>
+        <q-item clickable to="/weddings">
+          <q-item-label> Weddings Dashboard </q-item-label>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -77,12 +106,13 @@ export default defineComponent({
       token: null,
       user: null,
       isLogged: () => {
-        return vm.$auth.token && vm.$auth.user
+        return vm.$auth.token && vm.$auth.user;
       },
       setToken: async (token = null) => {
         if (!token) {
-          token = vm.$q.sessionStorage.getItem("weddingshow_access_token") ||
-          vm.$api.defaults.headers.common.Authorization?.split(" ")[1];
+          token =
+            vm.$q.sessionStorage.getItem("weddingshow_access_token") ||
+            vm.$api.defaults.headers.common.Authorization?.split(" ")[1];
         }
         if (token) {
           vm.$q.sessionStorage.set("weddingshow_access_token", token);
@@ -92,54 +122,58 @@ export default defineComponent({
           vm.$auth.logout();
         }
       },
-      logout: async () => {
+      logout: async (cb) => {
         vm.$q.sessionStorage.remove("weddingshow_access_token");
         delete vm.$api.defaults.headers.common["Authorization"];
         vm.$auth.token = null;
         vm.$auth.user = null;
+        if (typeof cb === "function") {
+          cb();
+        }
       },
-      loadUser: async () => {
+      loadUser: async (cb = null) => {
         vm.$auth.setToken();
         //
         if (vm.$auth.token) {
-          app.appContext.config.globalProperties.$auth.user =
-            await vm.$api
-              .request({
-                method: "GET",
-                url: "/auth/user",
-                // headers: headers,
-                data: {},
-              })
-              .then((r) => {
-                console.debug(r);
-                return r.data;
-              })
-              .catch((e) => {
-                console.error(e);
-                return null;
-              });
+          app.appContext.config.globalProperties.$auth.user = await vm.$api
+            .request({
+              method: "GET",
+              url: "/auth/user",
+              // headers: headers,
+              data: {},
+            })
+            .then((r) => {
+              // console.debug(r); // debug
+              return r.data;
+            })
+            .catch((e) => {
+              console.error(e);
+              return null;
+            });
+          if (typeof cb === "function") {
+            cb(vm.$auth.user);
+          }
         }
       },
       refreshToken: async () => {
         vm.$auth.setToken();
         //
         if (vm.$auth.token) {
-          app.appContext.config.globalProperties.$auth.token =
-            await vm.$api
-              .request({
-                method: "GET",
-                url: "/auth/user/token_refresh",
-                // headers: headers,
-                data: {},
-              })
-              .then((r) => {
-                console.debug(r);
-                return r.data.token;
-              })
-              .catch((e) => {
-                console.error(e);
-                return null;
-              });
+          app.appContext.config.globalProperties.$auth.token = await vm.$api
+            .request({
+              method: "GET",
+              url: "/auth/user/token_refresh",
+              // headers: headers,
+              data: {},
+            })
+            .then((r) => {
+              // console.debug(r); // debug
+              return r.data.token;
+            })
+            .catch((e) => {
+              console.error(e);
+              return null;
+            });
         }
       },
     });
