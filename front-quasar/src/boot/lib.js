@@ -1,7 +1,9 @@
 import { boot } from 'quasar/wrappers'
+import parseJwt from 'src/lib/parseJwt'
 import setWith from 'src/lib/setWith'
 
 const lib = {
+  parseJwt,
   setWith,
 }
 

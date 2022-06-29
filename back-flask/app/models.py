@@ -20,6 +20,7 @@ class User(Base):
 
 class Wedding(Base):
     meta = {'collection': 'weddings'}
+    user = db.ReferenceField(User)
     name = db.StringField(required=True)
 
 

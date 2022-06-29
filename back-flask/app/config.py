@@ -34,9 +34,14 @@ THREADS_PER_PAGE = 2
 # Enable protection agains *Cross-site Request Forgery (CSRF)*
 CSRF_ENABLED     = True
 
-# Use a secure, unique and absolutely secret key for
-# signing the data. 
+# **IMPORTANT **
+#
+# I'm keeping the secret keys in this file that is included to the version control for demonstration purpose.
+# In a production environment, you should move this information to a secure location and use a different approach to protect it.
+#
+# secret key for signing the data. 
 CSRF_SESSION_KEY = "fzgFxTZe3MgRax9V2K8y7KOSQHA9WRIVUeN4RVT9VdufoqlP1mMgxJwUwjenhZGSx3UUIvBmKNjaAWj1viMHbSOyo9uqcabS7Pb6c2Nsrgaf0fXEu80buJHr780omOIC"
-
-# Secret key for signing cookies
+#
+# secret key for signing cookies
 SECRET_KEY = "NN3WNCWWY4TWwR3wIpUVWw3d9uuV8qEo1ipkAHxvr6mW6qpNw73xH5zs1ge6vF1h1iIUqjQlCFZXwuE8o4yE3RxUZB5KQEVZdA7KbAgyOAlUK8JtUbeActwV1yr0h8XU"
+#
