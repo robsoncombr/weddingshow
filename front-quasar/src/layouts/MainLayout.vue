@@ -60,6 +60,7 @@ export default defineComponent({
 
   setup() {
     const app = getCurrentInstance();
+    const vm = app.appContext.config.globalProperties;
 
     const $env = {
       // $dev atualmente baseado no hostname

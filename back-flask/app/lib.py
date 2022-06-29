@@ -23,7 +23,8 @@ def token_create(**kwargs):
             'exp': datetime.utcnow() + timedelta(minutes=120)},
             current_app.config['SECRET_KEY'], algorithm='HS256')
         #print(jwt.decode(token, current_app.config['SECRET_KEY'], 'HS256'))
-        return jsonify({ 'token': token })
+        print(token)
+        return token
 
 def token_required(f):
     @wraps(f)

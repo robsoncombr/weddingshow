@@ -18,7 +18,7 @@ mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
 # ref: https://stackoverflow.com/questions/10434599/get-the-data-received-in-a-flask-request
 
-@mod_auth.route('/signup/', methods=['POST'])
+@mod_auth.route('/signup', methods=['POST'])
 def signup():
     name = request.json.get('name')
     email = request.json.get('email')
@@ -38,11 +38,11 @@ def signup():
         del user['password']
         #return user, 201
         #return 'User created', 201
-
-        return jsonify({ user: user, token: token_create(email=email) }), 200
+        token = token_create(email=email)
+        return jsonify({ 'user': user, 'token': token }), 200
     return 'User already exists', 400
 
-@mod_auth.route('/signin/', methods=['GET', 'POST'])
+@mod_auth.route('/signin', methods=['GET', 'POST'])
 def signin():
     email = request.json.get('email')
     password = request.json.get('password')
@@ -51,13 +51,13 @@ def signin():
     try:
         user = models.User.objects.get(email=email)
     except models.User.DoesNotExist:
-        return 'User does not exist', 400
+        return 'User does not exist', 401
     user = user.to_mongo()
     user['_id'] = str(user['_id'])
     if check_password_hash(user['password'], password):
-        del user['password']
-        return token_create(email=email), 200
-    return 'Wrong password', 400
+        token = token_create(email=email)
+        return jsonify({ 'token': token }), 200
+    return 'Wrong password', 401
 
 @mod_auth.route('/user/', methods=['GET', 'POST'])
 @token_required
