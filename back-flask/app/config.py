@@ -34,7 +34,7 @@ THREADS_PER_PAGE = 2
 # Enable protection agains *Cross-site Request Forgery (CSRF)*
 CSRF_ENABLED     = True
 
-# **IMPORTANT **
+# TODO: important...
 #
 # I'm keeping the secret keys in this file that is included to the version control for demonstration purpose.
 # In a production environment, you should move this information to a secure location and use a different approach to protect it.

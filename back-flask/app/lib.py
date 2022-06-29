@@ -14,7 +14,8 @@ def token_create(**kwargs):
         iat - the time the jwt was issued at
         exp - is the moment the jwt should expire, which is 120 minutes after issuing in this case
         #
-        I will not create a refresh token for now and I will use the JWT token for the authentication and also for the refresh token.
+        # TODO: important...
+        I will not create a refresh token for now and I will use the JWT token for the authentication and also for the token refresh on a dedicated route for demonstration purpose.
         '''
         token = jwt.encode({
             'sub': email,
