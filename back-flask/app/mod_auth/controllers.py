@@ -70,5 +70,5 @@ def user(current_user):
 @token_required
 def user_token(current_user):
     if request.method == 'GET':
-        token = token_create(email=email)
+        token = token_create(email=current_user['email'])
         return jsonify({ 'token': token }), 200

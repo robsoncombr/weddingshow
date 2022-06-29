@@ -44,16 +44,12 @@ export default defineComponent({
       })
         .then(response => {
           // console.log(response); // debug
-          vm.$q.sessionStorage.set('weddingshow_access_token', response.data.token)
-          vm.$api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
-          vm.$auth.loadUser()
-          // const token_decoded = vm.$lib.jwtParse(response.data.token);
+          vm.$auth.setToken(response.data.token);
+          vm.$auth.loadUser();
         })
         .catch(error => {
           console.log(error); // debug
-          vm.$q.sessionStorage.remove('weddingshow_access_token')
-          delete vm.$api.defaults.headers.common['Authorization']
-          vm.$auth.loadUser()
+          vm.$auth.logout();
         });
     };
 
