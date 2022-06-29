@@ -59,9 +59,16 @@ def signin():
         return jsonify({ 'token': token }), 200
     return 'Wrong password', 401
 
-@mod_auth.route('/user/', methods=['GET', 'POST'])
+@mod_auth.route('/user', methods=['GET', 'POST'])
 @token_required
 def user(current_user):
     if request.method == 'GET':
         return current_user, 200
     return 'POST'
+
+@mod_auth.route('/user/token_refresh', methods=['GET'])
+@token_required
+def user_token(current_user):
+    if request.method == 'GET':
+        token = token_create(email=email)
+        return jsonify({ 'token': token }), 200

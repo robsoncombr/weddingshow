@@ -80,7 +80,7 @@ export default defineComponent({
           await app.appContext.config.globalProperties.$api
             .request({
               method: "GET",
-              url: "/auth/user/",
+              url: "/auth/user",
               // headers: headers,
               data: {},
             })
