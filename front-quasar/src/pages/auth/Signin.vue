@@ -2,7 +2,7 @@
   <q-page>
     <div
       class="row"
-      style="padding: 8px; color: #bb8d37; background-color: transparent"
+      style="margin-bottom: 8px; padding: 8px; color: #bb8d37; background-color: transparent"
     >
       <div class="flex flex-center">
         <q-btn

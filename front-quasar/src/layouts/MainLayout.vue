@@ -1,4 +1,10 @@
 <template>
+  <q-inner-loading :showing="true" v-if="!$state.$get('loadedUser')">
+    <q-spinner-gears size="50px" color="orange-10" />
+    <div class="q-mt-md text-bold text-orange-10" style="font-size: 16px">
+      Loading
+    </div>
+  </q-inner-loading>
   <q-layout view="hHh lpr fFf" v-if="$state.$get('loadedUser')">
     <q-header
       bordered
@@ -31,18 +37,32 @@
         </q-toolbar-title>
 
         <div>
-          <q-btn flat round>
+          <q-btn flat round style="margin-bottom: 8px">
             <q-icon name="account_circle" style="font-size: 45px"></q-icon>
             <q-popup-proxy>
               <q-list dense style="min-width: 250px; padding-bottom: 8px">
-                <q-item-label header class="bg-grey-1 text-right text-bold">{{ $auth.user.email }}</q-item-label>
+                <q-item-label header class="bg-grey-1 text-right text-bold">{{
+                  $auth.user.email
+                }}</q-item-label>
                 <q-separator spaced />
-                <q-item clickable v-ripple @click="$auth.logout(() => { $router.push('/') })">
+                <q-item
+                  clickable
+                  v-ripple
+                  @click="
+                    $auth.logout(() => {
+                      $router.push('/');
+                    })
+                  "
+                >
                   <q-item-section>
                     <q-item-label>Sign Out</q-item-label>
                   </q-item-section>
                   <q-item-section thumbnail>
-                    <q-icon name="logout" class="text-red" style="font-size: 30px"></q-icon>
+                    <q-icon
+                      name="logout"
+                      class="text-red"
+                      style="font-size: 30px"
+                    ></q-icon>
                   </q-item-section>
                 </q-item>
                 <q-separator spaced />
@@ -156,7 +176,7 @@ export default defineComponent({
           cb(vm.$auth.user);
         }
         //
-        vm.$state.$set('loadedUser', true)
+        vm.$state.$set("loadedUser", true);
       },
       refreshToken: async () => {
         vm.$auth.setToken();

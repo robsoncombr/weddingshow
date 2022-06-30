@@ -1,6 +1,7 @@
 from crypt import methods
 from flask import Blueprint, request, jsonify
 from app.lib import token_required
+from app import models
 from app.mod_weddings import acl
 
 mod_weddings = Blueprint('weddings', __name__, url_prefix='/weddings')
@@ -14,7 +15,16 @@ def index(user, id_wedding=None):
       if id_wedding is None:
         weddings = 'method to get a list of all weddings that user has access to'
         return jsonify(weddings), 200
-      return 'method to get wedding with id: ' + id_wedding, 200
+      # return 'method to get wedding with id: ' + id_wedding, 200
+      try:
+        print(id_wedding)
+        print(user['_id'])
+        wedding = models.Wedding.objects.get(user=user['_id'])
+      except models.Wedding.DoesNotExist:
+        return 'Wedding does not exist', 404
+      wedding = wedding.to_mongo()
+      wedding['_id'] = str(wedding['_id'])
+      return jsonify(wedding), 200
     if request.method == 'POST':
       return 'method to create a new wedding', 200
     if request.method == 'PUT':
