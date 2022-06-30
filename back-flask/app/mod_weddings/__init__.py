@@ -17,13 +17,12 @@ def index(user, id_wedding=None):
         return jsonify(weddings), 200
       # return 'method to get wedding with id: ' + id_wedding, 200
       try:
-        print(id_wedding)
-        print(user['_id'])
-        wedding = models.Wedding.objects.get(user=user['_id'])
+        wedding = models.Wedding.objects.get(id=id_wedding)
       except models.Wedding.DoesNotExist:
         return 'Wedding does not exist', 404
       wedding = wedding.to_mongo()
       wedding['_id'] = str(wedding['_id'])
+      wedding['user'] = str(wedding['user'])
       return jsonify(wedding), 200
     if request.method == 'POST':
       return 'method to create a new wedding', 200

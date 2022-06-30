@@ -3,15 +3,15 @@ from functools import wraps # functools is a standard Python module for higher-o
 def verify_wedding(f):
     @wraps(f)
     def _verify(user, *args, **kwargs):
-      print(user)
-      print(kwargs)
+      #print(user)
+      #print(kwargs)
       return f(user, *args, **kwargs)
     return _verify
 
 def verify_wedding_images(f):
     @wraps(f)
     def _verify(user, *args, **kwargs):
-      print(user)
-      print(kwargs)
+      #print(user)
+      #print(kwargs)
       return f(user, *args, **kwargs)
     return _verify

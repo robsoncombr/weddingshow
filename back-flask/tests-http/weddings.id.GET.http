@@ -1,0 +1,5 @@
+GET http://192.168.16.200:5000/weddings/62bceebee6979b64244b8d78
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyQHIuciIsImlhdCI6MTY1NjU0OTIyOSwiZXhwIjoxNjU2NTU2NDI5fQ.kircZwmjhXc2sL5O4xk4owUIvFijplOsimGfQOsGjt0
+
+{}
