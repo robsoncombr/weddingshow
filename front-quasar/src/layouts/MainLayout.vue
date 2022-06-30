@@ -51,6 +51,25 @@
                   clickable
                   v-ripple
                   @click="
+                    $router.push('/weddings');
+                  "
+                >
+                  <q-item-section>
+                    <q-item-label>Weddings Dashboard</q-item-label>
+                  </q-item-section>
+                  <q-item-section thumbnail>
+                    <q-icon
+                      name="dashboard"
+                      class="text-blue q-mr-sm"
+                      style="font-size: 30px"
+                    ></q-icon>
+                  </q-item-section>
+                </q-item>
+                <q-separator spaced />
+                <q-item
+                  clickable
+                  v-ripple
+                  @click="
                     $auth.logout(() => {
                       $router.push('/');
                     })
@@ -62,7 +81,7 @@
                   <q-item-section thumbnail>
                     <q-icon
                       name="logout"
-                      class="text-red"
+                      class="text-red q-mr-sm"
                       style="font-size: 30px"
                     ></q-icon>
                   </q-item-section>

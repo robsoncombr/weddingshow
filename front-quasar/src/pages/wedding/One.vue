@@ -64,10 +64,8 @@
         only owner and admins, can approve images, see separated per user,
         expansion item
       </div>
-      <div v-show="tab === 'acl'">
-        only owner and admins, can manage access control
-      </div>
-      <OneDetails v-show="tab === 'details'"></OneDetails>
+      <OneAcl :loadAll="loadAll" :loadOne="loadOne" v-show="tab === 'acl'"></OneAcl>
+      <OneDetails :loadAll="loadAll" :loadOne="loadOne" v-show="tab === 'details'"></OneDetails>
     </div>
   </q-page>
 </template>
@@ -75,10 +73,12 @@
 <script>
 import { defineComponent, getCurrentInstance, ref } from "vue";
 
+import OneAcl from './OneAcl.vue';
 import OneDetails from './OneDetails.vue';
 
 export default defineComponent({
   components: {
+    OneAcl,
     OneDetails,
   },
   setup() {
@@ -89,24 +89,45 @@ export default defineComponent({
 
     vm.$state.$set("weddings.hasAccess", false);
     vm.$state.$set("weddings.wedding", null);
-    vm.$api
-      .request({
-        method: "GET",
-        url: `/weddings/${vm.$route.params.wedding}`,
-        data: {},
-      })
-      .then((response) => {
-        vm.$state.$set("weddings.hasAccess", true);
-        vm.$state.$set("weddings.wedding", response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-        vm.$router.push("/");
-      });
+    const loadOne = async () => {
+      vm.$api
+        .request({
+          method: "GET",
+          url: `/weddings/${vm.$route.params.wedding}`,
+          data: {},
+        })
+        .then((response) => {
+          vm.$state.$set("weddings.hasAccess", true);
+          vm.$state.$set("weddings.wedding", response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+          vm.$router.push("/");
+        });
+    }
+    loadOne()
+
+    const loadAll = async () => {
+      vm.$api
+        .request({
+          method: "GET",
+          url: '/weddings',
+          data: {},
+        })
+        .then((response) => {
+          vm.$state.$set("weddings.all", response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+          vm.$router.push("/");
+        });
+    }
 
     const tab = ref("images");
 
     return {
+      loadAll,
+      loadOne,
       tab,
     };
   },

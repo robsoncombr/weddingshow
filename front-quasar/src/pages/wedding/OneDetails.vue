@@ -1,11 +1,14 @@
 <template>
-  <div>
+  <div class="q-pl-lg">
     <q-input
       :modelValue="$state.$get('weddings.wedding.name')"
       @update:modelValue="$state.$set('weddings.wedding.name', $event)"
+      label="Name"
     />
     <q-btn
+      color="green"
       label="Save"
+      class="q-ma-md"
       @click="
         () => {
           $api.request({
@@ -18,6 +21,7 @@
           }).then((r) => {
             $q.notify({ message: 'Wedding updated!', color: 'positive' });
             loadAll();
+            loadOne();
           });
         }
       "
@@ -29,29 +33,21 @@
 import { defineComponent, getCurrentInstance, ref } from "vue";
 
 export default defineComponent({
+  props: {
+    loadAll: {
+      type: Function,
+      required: true,
+    },
+    loadOne: {
+      type: Function,
+      required: true,
+    },
+  },
   setup() {
     const app = getCurrentInstance();
     const vm = app.appContext.config.globalProperties;
 
-    vm.$state.$set("weddings.all", []);
-    const loadAll = async () => {
-      vm.$api
-        .request({
-          method: "GET",
-          url: '/weddings',
-          data: {},
-        })
-        .then((response) => {
-          vm.$state.$set("weddings.all", response.data);
-        })
-        .catch((error) => {
-          console.error(error);
-          vm.$router.push("/");
-        });
-    }
-
     return {
-      loadAll,
     };
   },
 });
