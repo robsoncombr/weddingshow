@@ -1,5 +1,6 @@
 # Import the database object (db) from the main application module
 # We will define this inside /app/__init__.py in the next sections.
+from importlib.metadata import requires
 from app import db
 from datetime import datetime
 # Define a base model for other database tables to inherit
@@ -7,8 +8,9 @@ from datetime import datetime
 
 class Base(db.Document):
     meta = {'abstract': True, 'allow_inheritance': True}
-    dt_created = db.DateTimeField(required=True, default=datetime.utcnow())
-    dt_updated = db.DateTimeField(required=True, default=datetime.utcnow())
+    # TODO: default=datetime.utcnow() does not work as I expected, it will always return the time from when the Model was built in memory, I have no time to find the workaround for this. I will handle it on runtime methods.
+    dt_created = db.DateTimeField(required=True)
+    dt_updated = db.DateTimeField(required=True)
 
 
 class User(Base):

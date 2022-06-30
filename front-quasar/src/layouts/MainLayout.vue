@@ -41,9 +41,11 @@
             <q-icon name="account_circle" style="font-size: 45px"></q-icon>
             <q-popup-proxy>
               <q-list dense style="min-width: 250px; padding-bottom: 8px">
-                <q-item-label header class="bg-grey-1 text-right text-bold">{{
-                  $auth.user.email
-                }}</q-item-label>
+                <q-item-label header class="bg-grey-2 text-right text-bold">
+                  {{ $auth.user.name }}
+                  <br>
+                  {{ $auth.user.email }}
+                </q-item-label>
                 <q-separator spaced />
                 <q-item
                   clickable
@@ -182,7 +184,7 @@ export default defineComponent({
         vm.$auth.setToken();
         //
         if (vm.$auth.token) {
-          app.appContext.config.globalProperties.$auth.token = await vm.$api
+          await vm.$api
             .request({
               method: "GET",
               url: "/auth/user/token_refresh",
@@ -191,11 +193,11 @@ export default defineComponent({
             })
             .then((r) => {
               // console.debug(r); // debug
-              return r.data.token;
+              vm.$auth.setToken(r.data.token);
             })
             .catch((e) => {
               console.error(e);
-              return null;
+              vm.$auth.logout();
             });
         }
       },

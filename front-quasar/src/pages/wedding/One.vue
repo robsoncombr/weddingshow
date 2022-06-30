@@ -45,13 +45,13 @@
         label="My Images"
       />
       <q-tab no-caps name="admin" icon="task_alt" label="Manage Images"
-        v-if="$auth?.user?._id === $state.$get('weddings.wedding.user')"
+        v-if="$auth?.user?._id === $state.$get('weddings.wedding.user') || $state.$get('weddings.wedding.users', []).filter(f => f.email === $auth?.user?.email).some(s => s.is_admin)"
       />
       <q-tab no-caps name="acl" icon="lock" label="Access Control"
-        v-if="$auth?.user?._id === $state.$get('weddings.wedding.user')"
+        v-if="$auth?.user?._id === $state.$get('weddings.wedding.user') || $state.$get('weddings.wedding.users', []).filter(f => f.email === $auth?.user?.email).some(s => s.is_admin)"
       />
       <q-tab no-caps name="details" icon="save_as" label="Wedding Details"
-        v-if="$auth?.user?._id === $state.$get('weddings.wedding.user')"
+        v-if="$auth?.user?._id === $state.$get('weddings.wedding.user') || $state.$get('weddings.wedding.users', []).filter(f => f.email === $auth?.user?.email).some(s => s.is_admin)"
       />
     </q-tabs>
 
@@ -67,38 +67,7 @@
       <div v-show="tab === 'acl'">
         only owner and admins, can manage access control
       </div>
-      <div v-show="tab === 'details'">
-        only owner and admins, can manage the wedding details
-        {{ $state.$get('weddings.wedding.name') }}
-        <q-input
-          :modelValue="$state.$get('weddings.wedding.name')"
-          @update:modelValue="$state.$set('weddings.wedding.name', $event)"
-        />
-        <q-btn
-          label="Save"
-          @click="() => {
-            $api.request({
-              method: 'PUT',
-              url: '/weddings/' + $state.$get('weddings.wedding._id'),
-              data: {
-                name: $state.$get('weddings.wedding.name'),
-                users: [{ email: 'b@b.b', is_admin: true}]
-              }
-            })
-          }"/>
-        <q-btn
-          label="POST"
-          @click="() => {
-            $api.request({
-              method: 'POST',
-              url: '/weddings',
-              data: {
-                name: new Date().getTime().toString(),
-                users: [{ email: 'a@a.a', is_admin: true}]
-              }
-            })
-          }"/>
-      </div>
+      <OneDetails v-show="tab === 'details'"></OneDetails>
     </div>
   </q-page>
 </template>
@@ -106,7 +75,12 @@
 <script>
 import { defineComponent, getCurrentInstance, ref } from "vue";
 
+import OneDetails from './OneDetails.vue';
+
 export default defineComponent({
+  components: {
+    OneDetails,
+  },
   setup() {
     const app = getCurrentInstance();
     const vm = app.appContext.config.globalProperties;

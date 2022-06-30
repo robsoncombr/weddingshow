@@ -7,5 +7,6 @@ docker run \
         -v /robson/weddingshow/back-flask/app/run.py:/weddingshow/run.py \
         -v /robson/weddingshow/back-flask/app/config.py:/weddingshow/config.py \
         -v /robson/weddingshow/back-flask/app:/weddingshow/app \
+        -v /robson/weddingshow/back-flask/tests:/weddingshow/app/tests \
         --restart always \
         -d -t --name back-flask back-flask

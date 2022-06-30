@@ -4,6 +4,7 @@ from bson.objectid import ObjectId
 from app.lib import token_required
 from app import models
 from app.mod_weddings import acl
+from mongoengine.queryset.visitor import Q
 
 mod_weddings = Blueprint('weddings', __name__, url_prefix='/weddings')
 
@@ -14,13 +15,28 @@ mod_weddings = Blueprint('weddings', __name__, url_prefix='/weddings')
 def index(user, id_wedding=None):
     if request.method == 'GET':
       if id_wedding is None:
-        weddings = 'method to get a list of all weddings that user has access to'
+        # weddings = 'method to get a list of all weddings that user has access to'
+        try:
+          # NOTE: query evolution to get a list of all weddings that user has access to
+          #weddings = models.Wedding.objects().filter(user=ObjectId(user['_id'])).order_by('-dt_created')
+          #weddings = models.Wedding.objects().filter(users__email=user['email']).order_by('-dt_created')
+          #weddings = models.Wedding.objects().filter(Q(user=ObjectId(user['_id']))).order_by('-dt_created')
+          #weddings = models.Wedding.objects().filter(Q(users__email=user['email'])).order_by('-dt_created')
+          #
+          weddings = models.Wedding.objects().filter(Q(user=ObjectId(user['_id'])) | Q(users__email=user['email'])).order_by('-dt_created')
+        except models.Wedding.DoesNotExist:
+          return jsonify([]), 200
+        #weddings = weddings.to_mongo()
+        #wedding['_id'] = str(wedding['_id'])
+        #wedding['user'] = str(wedding['user'])
         return jsonify(weddings), 200
       # return 'method to get wedding with id: ' + id_wedding, 200
       try:
         wedding = models.Wedding.objects.get(id=id_wedding)
       except models.Wedding.DoesNotExist:
         return 'Wedding does not exist', 404
+      except models.Wedding.MultipleObjectsReturned:
+        return 'Multiple weddings found', 400
       wedding = wedding.to_mongo()
       wedding['_id'] = str(wedding['_id'])
       wedding['user'] = str(wedding['user'])
@@ -32,6 +48,8 @@ def index(user, id_wedding=None):
         wedding['user'] = ObjectId(user['_id'])
         if not wedding['users']:
           wedding['users'] = []
+        wedding['dt_created'] = datetime.utcnow()
+        wedding['dt_updated'] = datetime.utcnow()
         wedding.save()
       except Exception as e:
         return str(e), 400
@@ -50,7 +68,7 @@ def index(user, id_wedding=None):
       except models.Wedding.DoesNotExist:
         return 'Wedding does not exist', 404
       except models.Wedding.MultipleObjectsReturned:
-        return 'Multiple weddings with same id', 400
+        return 'Multiple weddings found', 400
       except Exception as e:
         return str(e), 400
       wedding = wedding.to_mongo()
