@@ -44,9 +44,15 @@
         icon="contact_emergency"
         label="My Images"
       />
-      <q-tab no-caps name="admin" icon="task_alt" label="Manage Images" />
-      <q-tab no-caps name="acl" icon="lock" label="Access Control" />
-      <q-tab no-caps name="details" icon="save_as" label="Wedding Details" />
+      <q-tab no-caps name="admin" icon="task_alt" label="Manage Images"
+        v-if="$auth?.user?._id === $state.$get('weddings.wedding.user')"
+      />
+      <q-tab no-caps name="acl" icon="lock" label="Access Control"
+        v-if="$auth?.user?._id === $state.$get('weddings.wedding.user')"
+      />
+      <q-tab no-caps name="details" icon="save_as" label="Wedding Details"
+        v-if="$auth?.user?._id === $state.$get('weddings.wedding.user')"
+      />
     </q-tabs>
 
     <div class="q-pa-lg">
@@ -63,6 +69,35 @@
       </div>
       <div v-show="tab === 'details'">
         only owner and admins, can manage the wedding details
+        {{ $state.$get('weddings.wedding.name') }}
+        <q-input
+          :modelValue="$state.$get('weddings.wedding.name')"
+          @update:modelValue="$state.$set('weddings.wedding.name', $event)"
+        />
+        <q-btn
+          label="Save"
+          @click="() => {
+            $api.request({
+              method: 'PUT',
+              url: '/weddings/' + $state.$get('weddings.wedding._id'),
+              data: {
+                name: $state.$get('weddings.wedding.name'),
+                users: [{ email: 'b@b.b', is_admin: true}]
+              }
+            })
+          }"/>
+        <q-btn
+          label="POST"
+          @click="() => {
+            $api.request({
+              method: 'POST',
+              url: '/weddings',
+              data: {
+                name: new Date().getTime().toString(),
+                users: [{ email: 'a@a.a', is_admin: true}]
+              }
+            })
+          }"/>
       </div>
     </div>
   </q-page>
