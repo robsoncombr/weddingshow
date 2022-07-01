@@ -35,8 +35,8 @@ class Image(Base):
     meta = {'collection': 'images'}
     wedding = db.ReferenceField(Wedding)
     user = db.ReferenceField(User)
-    id_approved = db.BooleanField(required=True, default=False)
-    image_path = db.StringField(required=True)
+    user_email = db.StringField(required=True)
+    is_approved = db.BooleanField(required=True, default=False)
 
 # small tests - development only
 # print(User(email="r@r.r",dt_updated=datetime.utcnow()).save())

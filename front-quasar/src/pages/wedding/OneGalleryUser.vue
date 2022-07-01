@@ -3,7 +3,7 @@
     <q-uploader
       multiple
       batch
-      :url="`${$api.defaults.baseURL}/weddings/${$route.params.wedding}/images`"
+      :url="`${$api.defaults.baseURL}/weddings/${$route.params.wedding}/images/upload`"
       :headers="[{ name: 'Authorization', value: `Bearer ${$auth.token}` }]"
       label="Select Your Images! - Batch upload, max file size 5MB"
       max-file-size="5620000"

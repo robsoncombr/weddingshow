@@ -30,11 +30,15 @@ RUN pip install flask-mongoengine
 RUN pip install flask-cors pyjwt
 # aws
 RUN pip install boto3 awscli
+# pillow
+# TODO: implementar a criação do thumbnail serverless, com trigger do S3
+# https://santoshk.dev/posts/2021/create-thumbnail-worker-with-s3-and-lambda-make-the-thumbnail/
+RUN pip install pillow
 
 # requirements notes:
 # generate project requirements: pip freeze > requirements.txt
 # install project requirements: pip install -r requirements.txt
 
-#COPY /nuvial/weddingshow/back-flask/.aws /root
+COPY .aws/* /root/.aws/
 
 CMD ["python", "run.py"]
