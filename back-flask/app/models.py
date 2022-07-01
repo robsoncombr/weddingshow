@@ -39,6 +39,7 @@ class Image(Base):
     user = db.ReferenceField(User)
     user_email = db.StringField(required=True)
     filename = db.StringField(required=True)
+    mimetype = db.StringField(required=True)
     thumb = db.BinaryField(default=None)
     is_approved = db.BooleanField(required=True, default=False)
     # TODO: due to lack of time, I am choosing to save user reviews in a list, with identification and calculate the total on the front, this creates a privacy issue, as it is possible to see other users' reviews.

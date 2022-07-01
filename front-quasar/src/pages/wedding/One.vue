@@ -37,18 +37,21 @@
         name="images"
         icon="photo_library"
         label="Wedding Gallery"
+        @click="$state.$get('wedings.methods.loadGallery', () => {})()"
       />
       <q-tab
         no-caps
         name="myimages"
-        icon="contact_emergency"
-        label="My Images"
+        icon="upload"
+        label="Your Gallery"
+        @click="$state.$get('wedings.methods.loadGalleryUser', () => {})()"
       />
       <q-tab
         no-caps
         name="admin"
         icon="task_alt"
         label="Manage Images"
+        @click="$state.$get('wedings.methods.loadAdmin', () => {})()"
         v-if="
           $auth?.user?._id === $state.$get('weddings.wedding.user') ||
           $state
@@ -62,6 +65,7 @@
         name="acl"
         icon="lock"
         label="Access Control"
+        @click="$state.$get('wedings.methods.loadOne', () => {})()"
         v-if="
           $auth?.user?._id === $state.$get('weddings.wedding.user') ||
           $state
@@ -75,6 +79,7 @@
         name="details"
         icon="save_as"
         label="Wedding Details"
+        @click="$state.$get('wedings.methods.loadOne', () => {})()"
         v-if="
           $auth?.user?._id === $state.$get('weddings.wedding.user') ||
           $state
@@ -89,27 +94,27 @@
       <OneGallery
         :loadAll="loadAll"
         :loadOne="loadOne"
-        v-show="tab === 'images'"
+        v-if="tab === 'images'"
       />
       <OneGalleryUser
         :loadAll="loadAll"
         :loadOne="loadOne"
-        v-show="tab === 'myimages'"
+        v-if="tab === 'myimages'"
       ></OneGalleryUser>
       <OneAdmin
         :loadAll="loadAll"
         :loadOne="loadOne"
-        v-show="tab === 'admin'"
+        v-if="tab === 'admin'"
       ></OneAdmin>
       <OneAcl
         :loadAll="loadAll"
         :loadOne="loadOne"
-        v-show="tab === 'acl'"
+        v-if="tab === 'acl'"
       ></OneAcl>
       <OneDetails
         :loadAll="loadAll"
         :loadOne="loadOne"
-        v-show="tab === 'details'"
+        v-if="tab === 'details'"
       ></OneDetails>
     </div>
   </q-page>

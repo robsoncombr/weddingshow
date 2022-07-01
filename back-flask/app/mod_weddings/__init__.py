@@ -105,7 +105,7 @@ def upload(user, id_wedding, id_image=None):
           s3_client = boto3.client('s3')
           file = request.files.get(fname)
           filename = secure_filename(file.filename)
-          db_image = models.Image(wedding=ObjectId(id_wedding), user=ObjectId(user['_id']), user_email=user['email'], filename=filename, dt_created=datetime.utcnow(), dt_updated=datetime.utcnow()).save()
+          db_image = models.Image(wedding=ObjectId(id_wedding), user=ObjectId(user['_id']), user_email=user['email'], filename=filename, mimetype=file.mimetype, dt_created=datetime.utcnow(), dt_updated=datetime.utcnow()).save()
           db_image_mongo = db_image.to_mongo()
           print('created on database: ' + filename)
           filename = f"{db_image_mongo['_id']}_{filename}"
@@ -171,6 +171,21 @@ def images(user, id_wedding, id_image=None):
           print(str(e))
           return str(e), 400
         return jsonify(images), 200
+      else:
+        # return 'method to get image with id: ' + id_image, 200
+        image_db = models.Image.objects().get(id=ObjectId(id_image))
+        s3_client = boto3.client('s3')
+        #
+        # NOTE: i was not able to display this on client side, need to research some more, no time now
+        #
+        # image_s3 = s3_client.get_object(Bucket=BUCKET, Key=f"weddings/{id_wedding}/images/{id_image}_{image_db['filename']}").get('Body').read()
+        # return send_file(BytesIO(image_s3), mimetype=image_db['mimetype'])
+        #
+        # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/s3-presigned-urls.html
+        #
+        presigned_url = s3_client.generate_presigned_url('get_object', Params={'Bucket': BUCKET, 'Key': f"weddings/{id_wedding}/images/{id_image}_{image_db['filename']}"}, ExpiresIn=60)
+        return presigned_url, 200
+
     if request.method == 'DELETE':
       #return 'method to delete image with id: ' + id_image + ' from the wedding with id: ' + id_wedding, 200
       try:

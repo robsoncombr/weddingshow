@@ -1,6 +1,11 @@
 <template>
   <div class="q-pl-lg row justify-center">
     <div class="full-width row">
+      <div class="col-xs-12 q-ma-lg text-center" v-if="!imagesGallery.length">
+        <b>No images yet.</b>
+        <br><br>
+        Upload images and approve them to fill the gallery.
+      </div>
       <div
         class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
         v-for="(image, index) in imagesGallery"
@@ -12,7 +17,12 @@
               :src="`data:image/${image.filename.split('.')[1]};base64,${
                 image.thumb.$binary.base64
               }`"
+              class="cursor-pointer"
+              @click="zoomIn(image)"
             />
+            <q-tooltip>
+              Zoom In
+            </q-tooltip>
           </q-card-section>
           <q-card-section class="full-height row">
             <div class="col-xs-6">
@@ -79,6 +89,14 @@
       </div>
     </div>
   </div>
+  <q-dialog
+    v-model="zoomShow"
+    @show="zoomLoad(zoomImageThumb)"
+  >
+    <div class="flex flex-center" style="width: 100vw; height: 100vh" v-if="zoomImage">
+      <q-img :src="zoomImage"/>
+    </div>
+  </q-dialog>
 </template>
 
 <script>
@@ -103,10 +121,16 @@ export default defineComponent({
 
     const uploadMode = ref(false);
     const imagesGallery = ref([]);
+    const zoomShow = ref(false);
+    const zoomImageThumb = ref(null);
+    const zoomImage = ref(null);
 
     return {
       uploadMode,
       imagesGallery,
+      zoomShow,
+      zoomImageThumb,
+      zoomImage,
     };
   },
   methods: {
@@ -123,6 +147,25 @@ export default defineComponent({
         .catch((error) => {
           console.error(error);
           this.imagesGallery = [];
+        });
+    },
+    zoomIn(image) {
+      this.zoomShow = true
+      this.zoomImageThumb = image
+    },
+    zoomLoad(imageThumb) {
+      this.$api
+        .request({
+          method: "GET",
+          url: `/weddings/${this.$route.params.wedding}/images/${imageThumb._id.$oid}`,
+          data: {},
+        })
+        .then((response) => {
+          this.zoomImage = response.data;
+        })
+        .catch((error) => {
+          console.error(error);
+          this.zoomImage = null;
         });
     },
   },
