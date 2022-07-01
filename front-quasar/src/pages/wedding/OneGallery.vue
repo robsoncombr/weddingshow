@@ -85,27 +85,6 @@
 import { defineComponent, getCurrentInstance, ref } from "vue";
 import { useQuasar } from "quasar";
 
-function base64toBlob(base64Data, contentType) {
-  contentType = contentType || "";
-  var sliceSize = 1024;
-  var byteCharacters = atob(base64Data);
-  var bytesLength = byteCharacters.length;
-  var slicesCount = Math.ceil(bytesLength / sliceSize);
-  var byteArrays = new Array(slicesCount);
-
-  for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
-    var begin = sliceIndex * sliceSize;
-    var end = Math.min(begin + sliceSize, bytesLength);
-
-    var bytes = new Array(end - begin);
-    for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
-      bytes[i] = byteCharacters[offset].charCodeAt(0);
-    }
-    byteArrays[sliceIndex] = new Uint8Array(bytes);
-  }
-  return new Blob(byteArrays, { type: contentType });
-}
-
 export default defineComponent({
   props: {
     loadAll: {
@@ -131,20 +110,6 @@ export default defineComponent({
     };
   },
   methods: {
-    base64toBlob,
-    onFinish(e) {
-      this.$q.notify({ message: "Image(s) uploaded!", color: "positive" });
-      this.uploadMode = false;
-      this.loadAll();
-      this.loadOne();
-      this.loadimagesGallery();
-    },
-    onRejected(rejectedEntries) {
-      this.$q.notify({
-        type: "negative",
-        message: `${rejectedEntries.length} file(s) did not pass validation constraints`,
-      });
-    },
     loadimagesGallery() {
       this.$api
         .request({

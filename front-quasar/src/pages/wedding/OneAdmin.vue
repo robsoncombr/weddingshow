@@ -16,13 +16,8 @@
           </q-card-section>
           <q-card-section class="full-height row">
             <div class="col-xs-6">
-              <q-rating
-                :model-value="
-                  $lib
-                    .$get(image, 'ratings', [])
-                    .reduce((a, n) => a + n.rating, 0) /
-                    $lib.$get(image, 'ratings', []).length || 0
-                "
+              <q-checkbox
+                :model-value="image.is_approved"
                 @update:model-value="
                   (v) => {
                     $api
@@ -30,49 +25,19 @@
                         method: 'POST',
                         url: `/weddings/${$state.$get(
                           'weddings.wedding._id'
-                        )}/images/${image._id.$oid}/rating`,
+                        )}/images/${image._id.$oid}/approve`,
                         data: {
-                          rating: v,
+                          is_approved: v,
                         },
                       })
                       .then((r) => (imagesAdmin[index] = r.data));
                   }
                 "
-                size="1.5em"
-                color="grey"
-                :color-selected="[
-                  'yellow-4',
-                  'yellow-5',
-                  'yellow-6',
-                  'yellow-7',
-                  'yellow-8',
-                ]"
-              >
-              </q-rating>
-              <span class="text-bold text-yellow-10 q-ml-xs">
-                (
-                {{
-                  $lib
-                    .$get(image, "ratings", [])
-                    .reduce((a, n) => a + n.rating, 0) /
-                    $lib.$get(image, "ratings", []).length || 0
-                }}
-                )
-              </span>
+                :label="image.is_approved ? 'Approved' : 'Not Approved'"
+              ></q-checkbox>
             </div>
             <div class="col-xs-6 text-right">
-              <q-btn
-                round
-                outline
-                size="sm"
-                color="blue"
-                icon="chat"
-                style="top: -6px; font-size: 12px"
-              >
-              <q-tooltip>
-                Join Conversation
-              </q-tooltip>
-              </q-btn>
+              &nbsp;
             </div>
           </q-card-section>
         </q-card>
@@ -84,27 +49,6 @@
 <script>
 import { defineComponent, getCurrentInstance, ref } from "vue";
 import { useQuasar } from "quasar";
-
-function base64toBlob(base64Data, contentType) {
-  contentType = contentType || "";
-  var sliceSize = 1024;
-  var byteCharacters = atob(base64Data);
-  var bytesLength = byteCharacters.length;
-  var slicesCount = Math.ceil(bytesLength / sliceSize);
-  var byteArrays = new Array(slicesCount);
-
-  for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
-    var begin = sliceIndex * sliceSize;
-    var end = Math.min(begin + sliceSize, bytesLength);
-
-    var bytes = new Array(end - begin);
-    for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
-      bytes[i] = byteCharacters[offset].charCodeAt(0);
-    }
-    byteArrays[sliceIndex] = new Uint8Array(bytes);
-  }
-  return new Blob(byteArrays, { type: contentType });
-}
 
 export default defineComponent({
   props: {
@@ -131,20 +75,6 @@ export default defineComponent({
     };
   },
   methods: {
-    base64toBlob,
-    onFinish(e) {
-      this.$q.notify({ message: "Image(s) uploaded!", color: "positive" });
-      this.uploadMode = false;
-      this.loadAll();
-      this.loadOne();
-      this.loadimagesAdmin();
-    },
-    onRejected(rejectedEntries) {
-      this.$q.notify({
-        type: "negative",
-        message: `${rejectedEntries.length} file(s) did not pass validation constraints`,
-      });
-    },
     loadimagesAdmin() {
       this.$api
         .request({
