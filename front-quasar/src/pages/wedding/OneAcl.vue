@@ -37,6 +37,24 @@
       />
       <q-input v-model="one.email" label="User's e-mail" clearable />
       <q-checkbox v-model="one.is_admin" label="Admin" />
+
+      <div class="row justify-center" v-if="!$state.$get('weddings.wedding.users', []).length">
+        <q-card class="card-info q-mt-xl" flat bordered>
+          <q-card-section horizontal>
+            <q-icon
+              name="info"
+              class="col-3 text-yellow-9"
+              style="font-size: 40px"
+            />
+            <q-card-section style="font-size: 13px">
+              <li>Allow users to see your wedding gallery and upload their images, by
+              indicating their e-mail address.</li>
+              <li>If you mark an user as admin, they will be able to manage the
+              wedding and users as well.</li>
+            </q-card-section>
+          </q-card-section>
+        </q-card>
+      </div>
     </div>
 
     <div
@@ -46,7 +64,10 @@
       No users yet, click on the button above to add one.
     </div>
 
-    <div class="q-pa-lg text-left">
+    <div
+      class="q-pa-lg text-left"
+      v-if="$state.$get('weddings.wedding.users', []).length"
+    >
       <table>
         <tr class="text-bold">
           <td>E-mail</td>
@@ -164,3 +185,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="sass" scoped>
+.card-info
+  width: 100%
+  max-width: 500px
+</style>

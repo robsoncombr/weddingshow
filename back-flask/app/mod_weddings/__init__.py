@@ -1,7 +1,11 @@
 import os
+import base64
 import boto3 # http://boto3.readthedocs.io/en/latest/guide/s3.html
-from flask import Blueprint, request, jsonify
+from tabnanny import filename_only
+from flask import Blueprint, request, jsonify, send_file
 from werkzeug.utils import secure_filename
+from werkzeug.datastructures import FileStorage
+from io import BytesIO
 from datetime import datetime
 from bson.objectid import ObjectId
 from app.lib import token_required
@@ -90,30 +94,53 @@ def index(user, id_wedding=None):
 @acl.verify_wedding_images
 def upload(user, id_wedding, id_image=None):
     if request.method == 'POST':
-      UPLOAD_FOLDER = "/tmp/uploads"
       BUCKET = "weddingshow.us-east-1"
+      UPLOAD_FOLDER = "/tmp/uploads"
       if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
       # return 'method to create/upload a new image to the wedding with id: ' + id_wedding, 200
       for fname in request.files:
         try:
-          # url=f"https://s3.amazonaws.com/{BUCKET}/weddings/{id_wedding}/images/{f.filename}"
-          image = models.Image(wedding=ObjectId(id_wedding), user=ObjectId(user['_id']), user_email=user['email'], dt_created=datetime.utcnow(), dt_updated=datetime.utcnow()).save()
-          print(image)
           s3_client = boto3.client('s3')
-          f = request.files.get(fname)
-          filename = secure_filename(f.filename)
+          file = request.files.get(fname)
+          filename = secure_filename(file.filename)
+          db_image = models.Image(wedding=ObjectId(id_wedding), user=ObjectId(user['_id']), user_email=user['email'], filename=filename, dt_created=datetime.utcnow(), dt_updated=datetime.utcnow()).save()
+          db_image_mongo = db_image.to_mongo()
+          print('created on database: ' + filename)
+          filename = f"{db_image_mongo['_id']}_{filename}"
           src_file = os.path.join(UPLOAD_FOLDER, filename)
-          dst_file = os.path.join(UPLOAD_FOLDER, f"thumb_{filename}")
-          f.save(src_file)
+          filename_only, file_extension = os.path.splitext(src_file)
+          file.save(src_file)
+          print('saved to disk: ' + src_file)
           with Image.open(src_file) as image:
               image.thumbnail(tuple(x / 2 for x in image.size))
-              image.save(dst_file)
+              try:
+                db_image.thumb = image.tobytes() # frombytes()
+                db_image.save()
+                print('saved thumb on db: ' + src_file)
+              except Exception as e:
+                print(str(e))
+                return str(e), 400
           s3_client.upload_file(src_file, BUCKET, f"weddings/{id_wedding}/images/{filename}")
-          s3_client.upload_file(dst_file, BUCKET, f"weddings/{id_wedding}/images/thumb_{filename}")
+          print(f"saved to s3: weddings/{id_wedding}/images/{filename}")
+          os.remove(src_file)
+          print('removed from disk: ' + src_file)
         except Exception as e:
+          print(str(e))
           return str(e), 400
-        return 'Image(s) uploaded', 200
+      return 'Image(s) uploaded', 200
+
+@mod_weddings.route('/<string:id_wedding>/images/user', methods=['GET'])
+@token_required
+@acl.verify_wedding_images
+def list_images_user(user, id_wedding):
+    if request.method == 'GET':
+      try:
+        images = models.Image.objects().filter(Q(wedding=ObjectId(id_wedding)) & Q(user=ObjectId(user['_id']))).order_by('dt_created')
+      except Exception as e:
+        print(str(e))
+        return str(e), 400
+      return jsonify(images), 200
 
 @mod_weddings.route('/<string:id_wedding>/images', methods=['GET', 'POST'])
 @mod_weddings.route('/<string:id_wedding>/images/<string:id_image>', methods=['DELETE'])

@@ -1,5 +1,6 @@
 # Import the database object (db) from the main application module
 # We will define this inside /app/__init__.py in the next sections.
+import collections
 from importlib.metadata import requires
 from app import db
 from datetime import datetime
@@ -36,6 +37,9 @@ class Image(Base):
     wedding = db.ReferenceField(Wedding)
     user = db.ReferenceField(User)
     user_email = db.StringField(required=True)
+    filename = db.StringField(required=True)
+    #thumb = db.ImageField(collection_name='thumbs')
+    thumb = db.BinaryField()
     is_approved = db.BooleanField(required=True, default=False)
 
 # small tests - development only
