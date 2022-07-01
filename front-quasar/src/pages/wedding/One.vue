@@ -57,9 +57,7 @@
 
     <div class="q-pa-lg">
       <div v-show="tab === 'images'">all approved images</div>
-      <div v-show="tab === 'myimages'">
-        each user see and can manage its own images
-      </div>
+      <OneGalleryUser :loadAll="loadAll" :loadOne="loadOne" v-show="tab === 'myimages'"></OneGalleryUser>
       <div v-show="tab === 'admin'">
         only owner and admins, can approve images, see separated per user,
         expansion item
@@ -73,11 +71,13 @@
 <script>
 import { defineComponent, getCurrentInstance, ref } from "vue";
 
+import OneGalleryUser from './OneGalleryUser.vue';
 import OneAcl from './OneAcl.vue';
 import OneDetails from './OneDetails.vue';
 
 export default defineComponent({
   components: {
+    OneGalleryUser,
     OneAcl,
     OneDetails,
   },

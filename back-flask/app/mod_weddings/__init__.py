@@ -1,4 +1,6 @@
+import os
 from flask import Blueprint, request, jsonify
+from werkzeug.utils import secure_filename
 from datetime import datetime
 from bson.objectid import ObjectId
 from app.lib import token_required
@@ -90,6 +92,12 @@ def images(user, id_wedding, id_image=None):
         # NOTE: the list will include all approved and uploaded by the user: { wedding: [], user: []}
         return jsonify(images), 200
     if request.method == 'POST':
-      return 'method to create/upload a new image to the wedding with id: ' + id_wedding, 200
+      # return 'method to create/upload a new image to the wedding with id: ' + id_wedding, 200
+      for fname in request.files:
+        f = request.files.get(fname)
+        print(f)
+        #f.save('./uploads/%s' % secure_filename(fname))
+        print('./uploads/%s' % secure_filename(fname))
+      return 'Okay!'
     if request.method == 'DELETE':
       return 'method to delete image with id: ' + id_image + ' from the wedding with id: ' + id_wedding, 200
