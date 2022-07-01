@@ -115,7 +115,10 @@ def upload(user, id_wedding, id_image=None):
           with Image.open(src_file) as image:
               image.thumbnail(tuple(x / 2 for x in image.size))
               try:
-                db_image.thumb = image.tobytes() # frombytes()
+                # https://stackoverflow.com/questions/33101935/convert-pil-image-to-byte-array
+                imgByteArr = BytesIO()
+                image.save(imgByteArr, format=image.format)
+                db_image.thumb = imgByteArr.getvalue()
                 db_image.save()
                 print('saved thumb on db: ' + src_file)
               except Exception as e:

@@ -28,14 +28,8 @@
     <div class="full-width q-mt-lg row">
       <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-for="(image, index) in imagesUser" :key="`images_${index}`">
         <q-card flat bordered>
-          <q-card-section>
-            {{ `data:image/jpg;base64,${image.thumb}` }}
-            <!--
-            <q-img
-              :src="`${$api.defaults.baseURL}/weddings/${$route.params.wedding}/images/${image.id}/thumbnail`"
-              class="full-width"
-            />
-            -->
+          <q-card-section v-if="image.thumb?.$binary?.base64">
+            <img :src="`data:image/${image.filename.split('.')[1]};base64,${image.thumb.$binary.base64}`"/>
           </q-card-section>
           <q-card-section>
             <q-btn
@@ -53,6 +47,27 @@
 <script>
 import { defineComponent, getCurrentInstance, ref } from "vue";
 import { useQuasar } from 'quasar'
+
+function base64toBlob(base64Data, contentType) {
+    contentType = contentType || '';
+    var sliceSize = 1024;
+    var byteCharacters = atob(base64Data);
+    var bytesLength = byteCharacters.length;
+    var slicesCount = Math.ceil(bytesLength / sliceSize);
+    var byteArrays = new Array(slicesCount);
+
+    for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+        var begin = sliceIndex * sliceSize;
+        var end = Math.min(begin + sliceSize, bytesLength);
+
+        var bytes = new Array(end - begin);
+        for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+            bytes[i] = byteCharacters[offset].charCodeAt(0);
+        }
+        byteArrays[sliceIndex] = new Uint8Array(bytes);
+    }
+    return new Blob(byteArrays, { type: contentType });
+}
 
 export default defineComponent({
   props: {
@@ -79,6 +94,7 @@ export default defineComponent({
     };
   },
   methods: {
+    base64toBlob,
     onFinish (e) {
       this.$q.notify({ message: 'Image(s) uploaded!', color: 'positive' });
       this.uploadMode = false;
@@ -108,6 +124,8 @@ export default defineComponent({
         });
     },
     deleteImage (id) {
+      this.$q.notify({ message: 'Under Development', color: 'info' });
+      /*
       this.$api
         .request({
           method: "DELETE",
@@ -123,6 +141,7 @@ export default defineComponent({
         .catch((error) => {
           console.error(error);
         });
+      */
     },
   },
   created () {
