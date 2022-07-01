@@ -9,7 +9,8 @@ const lib = {
   lodash,
   $get: (object, path, defaultValue = null) => lodash.get(object, path, defaultValue),
   // TODO: $set usando lodash.setWith ???
-  $debug: (...data) => dev ? console.debug(data) : () => {},
+  // $debug: (...data) => dev ? console.debug(data) : () => {},
+  $debug: (...data) => console.debug(data),
 }
 
 export default boot(({ app }) => {

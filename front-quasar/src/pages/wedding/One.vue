@@ -44,26 +44,73 @@
         icon="contact_emergency"
         label="My Images"
       />
-      <q-tab no-caps name="admin" icon="task_alt" label="Manage Images"
-        v-if="$auth?.user?._id === $state.$get('weddings.wedding.user') || $state.$get('weddings.wedding.users', []).filter(f => f.email === $auth?.user?.email).some(s => s.is_admin)"
+      <q-tab
+        no-caps
+        name="admin"
+        icon="task_alt"
+        label="Manage Images"
+        v-if="
+          $auth?.user?._id === $state.$get('weddings.wedding.user') ||
+          $state
+            .$get('weddings.wedding.users', [])
+            .filter((f) => f.email === $auth?.user?.email)
+            .some((s) => s.is_admin)
+        "
       />
-      <q-tab no-caps name="acl" icon="lock" label="Access Control"
-        v-if="$auth?.user?._id === $state.$get('weddings.wedding.user') || $state.$get('weddings.wedding.users', []).filter(f => f.email === $auth?.user?.email).some(s => s.is_admin)"
+      <q-tab
+        no-caps
+        name="acl"
+        icon="lock"
+        label="Access Control"
+        v-if="
+          $auth?.user?._id === $state.$get('weddings.wedding.user') ||
+          $state
+            .$get('weddings.wedding.users', [])
+            .filter((f) => f.email === $auth?.user?.email)
+            .some((s) => s.is_admin)
+        "
       />
-      <q-tab no-caps name="details" icon="save_as" label="Wedding Details"
-        v-if="$auth?.user?._id === $state.$get('weddings.wedding.user') || $state.$get('weddings.wedding.users', []).filter(f => f.email === $auth?.user?.email).some(s => s.is_admin)"
+      <q-tab
+        no-caps
+        name="details"
+        icon="save_as"
+        label="Wedding Details"
+        v-if="
+          $auth?.user?._id === $state.$get('weddings.wedding.user') ||
+          $state
+            .$get('weddings.wedding.users', [])
+            .filter((f) => f.email === $auth?.user?.email)
+            .some((s) => s.is_admin)
+        "
       />
     </q-tabs>
 
     <div class="q-pa-lg">
-      <div v-show="tab === 'images'">all approved images</div>
-      <OneGalleryUser :loadAll="loadAll" :loadOne="loadOne" v-show="tab === 'myimages'"></OneGalleryUser>
-      <div v-show="tab === 'admin'">
-        only owner and admins, can approve images, see separated per user,
-        expansion item
-      </div>
-      <OneAcl :loadAll="loadAll" :loadOne="loadOne" v-show="tab === 'acl'"></OneAcl>
-      <OneDetails :loadAll="loadAll" :loadOne="loadOne" v-show="tab === 'details'"></OneDetails>
+      <OneGallery
+        :loadAll="loadAll"
+        :loadOne="loadOne"
+        v-show="tab === 'images'"
+      />
+      <OneGalleryUser
+        :loadAll="loadAll"
+        :loadOne="loadOne"
+        v-show="tab === 'myimages'"
+      ></OneGalleryUser>
+      <OneAdmin
+        :loadAll="loadAll"
+        :loadOne="loadOne"
+        v-show="tab === 'admin'"
+      ></OneAdmin>
+      <OneAcl
+        :loadAll="loadAll"
+        :loadOne="loadOne"
+        v-show="tab === 'acl'"
+      ></OneAcl>
+      <OneDetails
+        :loadAll="loadAll"
+        :loadOne="loadOne"
+        v-show="tab === 'details'"
+      ></OneDetails>
     </div>
   </q-page>
 </template>
@@ -71,13 +118,17 @@
 <script>
 import { defineComponent, getCurrentInstance, ref } from "vue";
 
-import OneGalleryUser from './OneGalleryUser.vue';
-import OneAcl from './OneAcl.vue';
-import OneDetails from './OneDetails.vue';
+import OneGallery from "./OneGallery.vue";
+import OneGalleryUser from "./OneGalleryUser.vue";
+import OneAdmin from "./OneAdmin.vue";
+import OneAcl from "./OneAcl.vue";
+import OneDetails from "./OneDetails.vue";
 
 export default defineComponent({
   components: {
+    OneGallery,
     OneGalleryUser,
+    OneAdmin,
     OneAcl,
     OneDetails,
   },
@@ -104,14 +155,14 @@ export default defineComponent({
           console.error(error);
           vm.$router.push("/");
         });
-    }
-    loadOne()
+    };
+    loadOne();
 
     const loadAll = async () => {
       vm.$api
         .request({
           method: "GET",
-          url: '/weddings',
+          url: "/weddings",
           data: {},
         })
         .then((response) => {
@@ -121,7 +172,7 @@ export default defineComponent({
           console.error(error);
           vm.$router.push("/");
         });
-    }
+    };
 
     const tab = ref("images");
 

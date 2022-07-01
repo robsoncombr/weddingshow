@@ -1,6 +1,7 @@
 # Import the database object (db) from the main application module
 # We will define this inside /app/__init__.py in the next sections.
 import collections
+from email.policy import default
 from importlib.metadata import requires
 from app import db
 from datetime import datetime
@@ -29,7 +30,7 @@ class Wedding(Base):
     user = db.ReferenceField(User)  # owner of the wedding
     name = db.StringField(required=True)
     # list of users with access to the wedding, format: {'email':String, 'is_admin':Boolean}
-    users = db.ListField()
+    users = db.ListField(default=[])
 
 
 class Image(Base):
@@ -38,9 +39,11 @@ class Image(Base):
     user = db.ReferenceField(User)
     user_email = db.StringField(required=True)
     filename = db.StringField(required=True)
-    #thumb = db.ImageField(collection_name='thumbs')
-    thumb = db.BinaryField()
+    thumb = db.BinaryField(default=None)
     is_approved = db.BooleanField(required=True, default=False)
+    # TODO: due to lack of time, I am choosing to save user reviews in a list, with identification and calculate the total on the front, this creates a privacy issue, as it is possible to see other users' reviews.
+    ratings = db.ListField(default=[])
+    messages = db.ListField(default=[])
 
 # small tests - development only
 # print(User(email="r@r.r",dt_updated=datetime.utcnow()).save())

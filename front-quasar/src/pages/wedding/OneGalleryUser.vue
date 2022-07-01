@@ -29,13 +29,13 @@
       <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-for="(image, index) in imagesUser" :key="`images_${index}`">
         <q-card flat bordered>
           <q-card-section v-if="image.thumb?.$binary?.base64">
-            <img :src="`data:image/${image.filename.split('.')[1]};base64,${image.thumb.$binary.base64}`"/>
+            <q-img :src="`data:image/${image.filename.split('.')[1]};base64,${image.thumb.$binary.base64}`"/>
           </q-card-section>
           <q-card-section>
             <q-btn
               color="red-4"
               icon="delete"
-              @click="deleteImage(image.id)"
+              @click="deleteImage(image)"
             />
           </q-card-section>
         </q-card>
@@ -123,13 +123,11 @@ export default defineComponent({
           this.imagesUser = [];
         });
     },
-    deleteImage (id) {
-      this.$q.notify({ message: 'Under Development', color: 'info' });
-      /*
+    deleteImage (image) {
       this.$api
         .request({
           method: "DELETE",
-          url: `/weddings/${this.$route.params.wedding}/images/${id}`,
+          url: `/weddings/${this.$route.params.wedding}/images/${image._id.$oid}`,
           data: {},
         })
         .then((response) => {
@@ -141,7 +139,6 @@ export default defineComponent({
         .catch((error) => {
           console.error(error);
         });
-      */
     },
   },
   created () {

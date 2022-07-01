@@ -2,6 +2,8 @@
 from flask import Blueprint, jsonify, request, current_app, render_template, \
     flash, g, session, redirect, url_for
 
+from datetime import datetime
+
 # import password / encryption helper tools
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -31,7 +33,7 @@ def signup():
     try:
         user = models.User.objects.get(email=email)
     except models.User.DoesNotExist:
-        user = models.User(name=name, email=email, password=generate_password_hash(password))
+        user = models.User(name=name, email=email, password=generate_password_hash(password), dt_created=datetime.utcnow(), dt_updated=datetime.utcnow()).save()
         user.save()
         user = user.to_mongo()
         user['_id'] = str(user['_id'])

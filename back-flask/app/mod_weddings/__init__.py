@@ -16,6 +16,9 @@ from mongoengine.queryset.visitor import Q
 # https://santoshk.dev/posts/2021/create-thumbnail-worker-with-s3-and-lambda-make-the-thumbnail/
 from PIL import Image
 
+BUCKET = "weddingshow.us-east-1"
+UPLOAD_FOLDER = "/tmp/uploads"
+
 mod_weddings = Blueprint('weddings', __name__, url_prefix='/weddings')
 
 @mod_weddings.route('', methods=['GET', 'POST'])
@@ -94,8 +97,6 @@ def index(user, id_wedding=None):
 @acl.verify_wedding_images
 def upload(user, id_wedding, id_image=None):
     if request.method == 'POST':
-      BUCKET = "weddingshow.us-east-1"
-      UPLOAD_FOLDER = "/tmp/uploads"
       if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
       # return 'method to create/upload a new image to the wedding with id: ' + id_wedding, 200
@@ -145,31 +146,73 @@ def list_images_user(user, id_wedding):
         return str(e), 400
       return jsonify(images), 200
 
-@mod_weddings.route('/<string:id_wedding>/images', methods=['GET', 'POST'])
-@mod_weddings.route('/<string:id_wedding>/images/<string:id_image>', methods=['DELETE'])
+@mod_weddings.route('/<string:id_wedding>/images/admin', methods=['GET'])
+@token_required
+@acl.verify_wedding_images
+def list_images_admin(user, id_wedding):
+    if request.method == 'GET':
+      try:
+        images = models.Image.objects(wedding=ObjectId(id_wedding)).order_by('dt_created')
+      except Exception as e:
+        print(str(e))
+        return str(e), 400
+      return jsonify(images), 200
+
+@mod_weddings.route('/<string:id_wedding>/images', methods=['GET'])
+@mod_weddings.route('/<string:id_wedding>/images/<string:id_image>', methods=['GET', 'DELETE'])
 @token_required
 @acl.verify_wedding_images
 def images(user, id_wedding, id_image=None):
     if request.method == 'GET':
       if id_image is None:
-        images = 'method to get a list of all images that the user has access to the wedding with id: ' + id_wedding
-        # NOTE: the list will include all approved and uploaded by the user: { wedding: [], user: []}
-        return jsonify(images), 200
-    if request.method == 'POST':
-      UPLOAD_FOLDER = "/tmp/uploads"
-      BUCKET = "weddingshow-us-east-1"
-      if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
-      # return 'method to create/upload a new image to the wedding with id: ' + id_wedding, 200
-      for fname in request.files:
         try:
-          f = request.files.get(fname)
-          print(f)
-          #f.save('./uploads/%s' % secure_filename(fname))
-          f.save(os.path.join(UPLOAD_FOLDER, secure_filename(f.filename)))
-          upload_file(f"{UPLOAD_FOLDER}/{f.filename}", BUCKET, f.filename)
+          images = models.Image.objects().filter(Q(wedding=ObjectId(id_wedding)) & Q(is_approved=True)).order_by('dt_created')
         except Exception as e:
+          print(str(e))
           return str(e), 400
-        return 'ok', 200
+        return jsonify(images), 200
     if request.method == 'DELETE':
-      return 'method to delete image with id: ' + id_image + ' from the wedding with id: ' + id_wedding, 200
+      #return 'method to delete image with id: ' + id_image + ' from the wedding with id: ' + id_wedding, 200
+      try:
+        image = models.Image.objects().get(id=ObjectId(id_image))
+      except models.Image.DoesNotExist:
+        return 'Image does not exist', 404
+      except models.Image.MultipleObjectsReturned:
+        return 'Multiple images found', 400
+      except Exception as e:
+        print(str(e))
+        return str(e), 400
+      s3_client = boto3.client('s3')
+      s3_client.delete_object(Bucket=BUCKET, Key=f"weddings/{id_wedding}/images/{id_image}_{image.filename}")
+      image.delete()
+      return 'Image deleted', 200
+
+@mod_weddings.route('/<string:id_wedding>/images/<string:id_image>/rating', methods=['POST'])
+@token_required
+@acl.verify_wedding_images
+def imagesRating(user, id_wedding, id_image):
+    if request.method == 'POST':
+      image = models.Image.objects().get(id=id_image)
+      diff = list(filter(lambda rating: rating['user'] != user['_id'], image.ratings))
+      diff.append({ 'user': user['_id'], 'rating': request.json['rating'] })
+      image.ratings = diff
+      image.save()
+    return jsonify(image), 200
+
+@mod_weddings.route('/<string:id_wedding>/images/<string:id_image>/approve', methods=['POST'])
+@token_required
+@acl.verify_wedding_images
+def imagesApprove(user, id_wedding, id_image):
+    if request.method == 'POST':
+      try:
+        image = models.Image.objects().get(id=id_image)
+      except models.Image.DoesNotExist:
+        return 'Image does not exist', 404
+      except models.Image.MultipleObjectsReturned:
+        return 'Multiple images found', 400
+      except Exception as e:
+        print(str(e))
+        return str(e), 400
+      image.is_approved = request.json['is_approved']
+      image.save()
+    return jsonify(image), 200
