@@ -13,10 +13,27 @@
           icon="perm_identity"
           group="users"
           :label="user_email"
-          :caption="`Images: ${imagesAdminGrouped[user_email].length}`"
+          :caption="`${imagesAdminGrouped[user_email].length} image(s)`"
           v-for="user_email in Object.keys(imagesAdminGrouped)"
           :key="user_email"
         >
+          <template v-slot:header>
+            <div class="full-width bg-grey-2 row q-pa-sm">
+              <q-item-section avatar>
+                <q-icon name="photo" class="text-yellow-10" />
+              </q-item-section>
+
+              <q-item-section>
+                {{ user_email }}
+              </q-item-section>
+
+              <q-item-section side>
+                <div class="row items-center">
+                  {{ imagesAdminGrouped[user_email].length }} image(s)
+                </div>
+              </q-item-section>
+            </div>
+          </template>
           <div class="full-width row">
             <div
               class="col-xs-12 col-sm-6 col-md-4 col-lg-3"

@@ -28,10 +28,7 @@
             <div class="col-xs-6">
               <q-rating
                 :model-value="
-                  $lib
-                    .$get(image, 'ratings', [])
-                    .reduce((a, n) => a + n.rating, 0) /
-                    $lib.$get(image, 'ratings', []).length || 0
+                  $lib.$get(image, 'ratings', []).find(f => f.user === $auth.user._id)?.rating || 0
                 "
                 @update:model-value="
                   (v) => {
@@ -93,9 +90,7 @@
     v-model="zoomShow"
     @show="zoomLoad(zoomImageThumb)"
   >
-    <div class="flex flex-center" style="width: 100vw; height: 100vh" v-if="zoomImage">
-      <q-img :src="zoomImage"/>
-    </div>
+    <q-img :src="zoomImage" class="bg-white" />
   </q-dialog>
 </template>
 
@@ -150,8 +145,9 @@ export default defineComponent({
         });
     },
     zoomIn(image) {
-      this.zoomShow = true
+      this.zoomImage = null
       this.zoomImageThumb = image
+      this.zoomShow = true
     },
     zoomLoad(imageThumb) {
       this.$api
