@@ -94,7 +94,7 @@ def index(user, id_wedding=None):
 
 @mod_weddings.route('/<string:id_wedding>/images/upload', methods=['POST'])
 @token_required
-@acl.verify_wedding_images
+@acl.verify_wedding
 def upload(user, id_wedding, id_image=None):
     if request.method == 'POST':
       if not os.path.exists(UPLOAD_FOLDER):
@@ -136,7 +136,7 @@ def upload(user, id_wedding, id_image=None):
 
 @mod_weddings.route('/<string:id_wedding>/images/user', methods=['GET'])
 @token_required
-@acl.verify_wedding_images
+@acl.verify_wedding
 def list_images_user(user, id_wedding):
     if request.method == 'GET':
       try:
@@ -148,7 +148,8 @@ def list_images_user(user, id_wedding):
 
 @mod_weddings.route('/<string:id_wedding>/images/admin', methods=['GET'])
 @token_required
-@acl.verify_wedding_images
+@acl.verify_wedding
+@acl.verify_wedding_admin
 def list_images_admin(user, id_wedding):
     if request.method == 'GET':
       try:
@@ -161,7 +162,7 @@ def list_images_admin(user, id_wedding):
 @mod_weddings.route('/<string:id_wedding>/images', methods=['GET'])
 @mod_weddings.route('/<string:id_wedding>/images/<string:id_image>', methods=['GET', 'DELETE'])
 @token_required
-@acl.verify_wedding_images
+@acl.verify_wedding
 def images(user, id_wedding, id_image=None):
     if request.method == 'GET':
       if id_image is None:
@@ -185,11 +186,11 @@ def images(user, id_wedding, id_image=None):
         #
         presigned_url = s3_client.generate_presigned_url('get_object', Params={'Bucket': BUCKET, 'Key': f"weddings/{id_wedding}/images/{id_image}_{image_db['filename']}"}, ExpiresIn=60)
         return presigned_url, 200
-
     if request.method == 'DELETE':
       #return 'method to delete image with id: ' + id_image + ' from the wedding with id: ' + id_wedding, 200
       try:
-        image = models.Image.objects().get(id=ObjectId(id_image))
+        # limit to user's id (ACL)
+        image = models.Image.objects().filter(user=ObjectId(user['_id'])).get(id=ObjectId(id_image))
       except models.Image.DoesNotExist:
         return 'Image does not exist', 404
       except models.Image.MultipleObjectsReturned:
@@ -204,7 +205,7 @@ def images(user, id_wedding, id_image=None):
 
 @mod_weddings.route('/<string:id_wedding>/images/<string:id_image>/rating', methods=['POST'])
 @token_required
-@acl.verify_wedding_images
+@acl.verify_wedding
 def imagesRating(user, id_wedding, id_image):
     if request.method == 'POST':
       image = models.Image.objects().get(id=id_image)
@@ -216,7 +217,7 @@ def imagesRating(user, id_wedding, id_image):
 
 @mod_weddings.route('/<string:id_wedding>/images/<string:id_image>/messages', methods=['POST'])
 @token_required
-@acl.verify_wedding_images
+@acl.verify_wedding
 def imagesMessages(user, id_wedding, id_image):
     if request.method == 'POST':
       image = models.Image.objects().get(id=id_image)
@@ -226,7 +227,8 @@ def imagesMessages(user, id_wedding, id_image):
 
 @mod_weddings.route('/<string:id_wedding>/images/<string:id_image>/approve', methods=['POST'])
 @token_required
-@acl.verify_wedding_images
+@acl.verify_wedding
+@acl.verify_wedding_admin
 def imagesApprove(user, id_wedding, id_image):
     if request.method == 'POST':
       try:
