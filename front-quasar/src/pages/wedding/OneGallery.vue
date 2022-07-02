@@ -99,6 +99,7 @@
                           dense
                           color="blue"
                           icon="send"
+                          :disable="!leaveMessage"
                           @click="
                             $api
                               .request({

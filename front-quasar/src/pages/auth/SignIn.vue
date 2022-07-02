@@ -96,8 +96,8 @@ export default defineComponent({
     const app = getCurrentInstance();
     const vm = app.appContext.config.globalProperties;
 
-    const email = ref("robson@robson.com.br");
-    const password = ref("test");
+    const email = ref("");
+    const password = ref("");
 
     const signin = () => {
       // console.log(email, password); // debug

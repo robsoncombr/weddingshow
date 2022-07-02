@@ -2,7 +2,8 @@ import { boot } from "quasar/wrappers";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://192.168.16.200:5000",
+  // baseURL: `http://${location.hostname}:5000`,
+  baseURL: 'http://weddingshow.robson.com.br:5000',
   headers: {
     "Content-Type": "application/json",
   },
