@@ -40,25 +40,23 @@ def verify_wedding_admin(f):
     def _verify(user, *args, **kwargs):
       print(user)
       print(kwargs)
-      id_admin = False
-      if kwargs.get('id_wedding') is not None:
-        try:
-          wedding = models.Wedding.objects().get(id=kwargs.get('id_wedding'))
-        except models.Wedding.DoesNotExist:
-          return 'Wedding does not exist', 404
-        except models.Wedding.MultipleObjectsReturned:
-          return 'Multiple weddings found', 404
-        except Exception as e:
-          print(str(e))
-          return 'Error: ' + str(e), 500
-        if str(wedding.user.pk) == str(user['_id']):
-          id_admin = True
-        else:
-          users = list(filter(lambda useracl: useracl['email'] == user['email'] and useracl['is_admin'] == True, wedding.users))
-          if len(users) > 0:
-            is_admin = True
+      is_admin = False
+      try:
+        wedding = models.Wedding.objects().get(id=kwargs.get('id_wedding'))
+      except models.Wedding.DoesNotExist:
+        return 'Wedding does not exist', 404
+      except models.Wedding.MultipleObjectsReturned:
+        return 'Multiple weddings found', 404
+      except Exception as e:
+        print(str(e))
+        return 'Error: ' + str(e), 500
+      if str(wedding.user.pk) == str(user['_id']):
+        is_admin = True
+      else:
+        users = list(filter(lambda useracl: useracl['email'] == user['email'] and useracl['is_admin'] == True, wedding.users))
+        if len(users) > 0:
+          is_admin = True
       if not is_admin:
         return 'You are not authorized to access this wedding as admin.', 401
-      else:
-        return f(user, *args, **kwargs)
+      return f(user, *args, **kwargs)
     return _verify
