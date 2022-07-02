@@ -101,6 +101,9 @@
       </div>
     </div>
   </q-page>
+  <q-page-scroller position="bottom-right" :scroll-offset="50" :offset="[18, 18]">
+    <q-btn fab icon="keyboard_arrow_up" color="primary" />
+  </q-page-scroller>
 </template>
 
 <script>
@@ -115,6 +118,7 @@ export default defineComponent({
 
     vm.$state.$set("weddings.all", []);
     const loadAll = async () => {
+      vm.$state.$doLoading()
       vm.$api
         .request({
           method: "GET",
@@ -127,7 +131,8 @@ export default defineComponent({
         .catch((error) => {
           console.error(error);
           vm.$router.push("/");
-        });
+        })
+        .finally(() => vm.$state.$doneLoading());
     };
     loadAll();
 

@@ -92,6 +92,9 @@
         </q-btn>
       </div>
     </div>
+    <q-page-scroller position="bottom-right" :scroll-offset="50" :offset="[18, 18]">
+      <q-btn fab icon="keyboard_arrow_up" color="primary" />
+    </q-page-scroller>
   </q-page>
 </template>
 

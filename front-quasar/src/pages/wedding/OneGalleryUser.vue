@@ -109,6 +109,7 @@ export default defineComponent({
       })
     },
     loadImagesUser () {
+      this.$state.$doLoading();
       this.$api
         .request({
           method: "GET",
@@ -121,9 +122,11 @@ export default defineComponent({
         .catch((error) => {
           console.error(error);
           this.imagesUser = [];
-        });
+        })
+        .finally(() => this.$state.$doneLoading());
     },
     deleteImage (image) {
+      this.$state.$doLoading();
       this.$api
         .request({
           method: "DELETE",
@@ -138,7 +141,8 @@ export default defineComponent({
         })
         .catch((error) => {
           console.error(error);
-        });
+        })
+        .finally(() => this.$state.$doneLoading());
     },
   },
   created () {

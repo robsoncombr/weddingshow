@@ -117,6 +117,9 @@
         v-if="tab === 'details'"
       ></OneDetails>
     </div>
+    <q-page-scroller position="bottom-right" :scroll-offset="50" :offset="[18, 18]">
+      <q-btn fab icon="keyboard_arrow_up" color="primary" />
+    </q-page-scroller>
   </q-page>
 </template>
 
@@ -146,6 +149,7 @@ export default defineComponent({
     vm.$state.$set("weddings.hasAccess", false);
     vm.$state.$set("weddings.wedding", null);
     const loadOne = async () => {
+      vm.$state.$doLoading();
       vm.$api
         .request({
           method: "GET",
@@ -159,7 +163,8 @@ export default defineComponent({
         .catch((error) => {
           console.error(error);
           vm.$router.push("/");
-        });
+        })
+        .finally(() => vm.$state.$doneLoading());
     };
     loadOne();
 

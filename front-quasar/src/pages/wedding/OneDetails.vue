@@ -11,6 +11,7 @@
       class="q-ma-md"
       @click="
         () => {
+          $state.$doLoading();
           $api.request({
             method: 'PUT',
             url: '/weddings/' + $state.$get('weddings.wedding._id'),
@@ -22,7 +23,8 @@
             $q.notify({ message: 'Wedding updated!', color: 'positive' });
             loadAll();
             loadOne();
-          });
+          })
+          .finally(() => $state.$doneLoading());
         }
       "
     />

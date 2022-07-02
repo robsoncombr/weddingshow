@@ -164,6 +164,7 @@ export default defineComponent({
           .$get("weddings.wedding.users", [])
           .filter((f) => f.email !== email)
       );
+      this.$state.$doLoading();
       this.$api
         .request({
           method: "PUT",
@@ -180,7 +181,8 @@ export default defineComponent({
           this.oneMode = false;
           this.loadAll();
           this.loadOne();
-        });
+        })
+        .finally(() => this.$state.$doneLoading());
     },
   },
 });

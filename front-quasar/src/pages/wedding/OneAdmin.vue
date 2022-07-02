@@ -54,6 +54,7 @@
                       v-model="image.is_approved"
                       @update:model-value="
                         (v) => {
+                          $state.$doLoading();
                           $api
                             .request({
                               method: 'POST',
@@ -63,7 +64,7 @@
                               data: {
                                 is_approved: v,
                               },
-                            })
+                            }).finally(() => $state.$doneLoading());
                         }
                       "
                       :label="image.is_approved ? 'Approved' : 'Not Approved'"
@@ -120,6 +121,7 @@ export default defineComponent({
   },
   methods: {
     loadimagesAdmin() {
+      this.$state.$doLoading()
       this.$api
         .request({
           method: "GET",
@@ -132,7 +134,8 @@ export default defineComponent({
         .catch((error) => {
           console.error(error);
           this.imagesAdmin = [];
-        });
+        })
+        .finally(() => this.$state.$doneLoading());
     },
   },
   created() {

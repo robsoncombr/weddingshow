@@ -32,6 +32,7 @@
                 "
                 @update:model-value="
                   (v) => {
+                    $state.$doLoading();
                     $api
                       .request({
                         method: 'POST',
@@ -42,7 +43,8 @@
                           rating: v,
                         },
                       })
-                      .then((r) => (imagesGallery[index] = r.data));
+                      .then((r) => (imagesGallery[index] = r.data))
+                      .finally(() => $state.$doneLoading());
                   }
                 "
                 size="1.20em"
@@ -195,6 +197,7 @@ export default defineComponent({
   },
   methods: {
     loadimagesGallery() {
+      this.$state.$doLoading();
       this.$api
         .request({
           method: "GET",
@@ -207,7 +210,8 @@ export default defineComponent({
         .catch((error) => {
           console.error(error);
           this.imagesGallery = [];
-        });
+        })
+        .finally(() => this.$state.$doneLoading());
     },
     zoomIn(image) {
       this.zoomImage = null;
@@ -215,6 +219,7 @@ export default defineComponent({
       this.zoomShow = true;
     },
     zoomLoad(imageThumb) {
+      this.$state.$doLoading();
       this.$api
         .request({
           method: "GET",
@@ -227,7 +232,8 @@ export default defineComponent({
         .catch((error) => {
           console.error(error);
           this.zoomImage = null;
-        });
+        })
+        .finally(() => this.$state.$doneLoading());
     },
   },
   created() {

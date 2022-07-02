@@ -92,6 +92,9 @@
           </q-btn>
         </div>
       </q-toolbar>
+      <q-inner-loading :showing="$state.$isLoading()">
+        <q-spinner size="0px" color="primary" />
+      </q-inner-loading>
     </q-header>
 
     <q-drawer
@@ -112,10 +115,16 @@
           <q-item-label> Weddings Dashboard </q-item-label>
         </q-item>
       </q-list>
+      <q-inner-loading :showing="$state.$isLoading()">
+        <q-spinner size="0px" color="primary" />
+      </q-inner-loading>
     </q-drawer>
 
     <q-page-container>
       <router-view />
+      <q-inner-loading :showing="$state.$isLoading()">
+        <q-spinner size="50px" color="primary" />
+      </q-inner-loading>
     </q-page-container>
   </q-layout>
 </template>
