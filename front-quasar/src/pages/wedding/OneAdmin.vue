@@ -29,7 +29,7 @@
 
               <q-item-section side>
                 <div class="row items-center">
-                  {{ imagesAdminGrouped[user_email].length }} image(s)
+                  {{ imagesAdminGrouped[user_email].length }} image(s) / {{ imagesAdminGrouped[user_email].filter(f => f.is_approved).length }} approved
                 </div>
               </q-item-section>
             </div>

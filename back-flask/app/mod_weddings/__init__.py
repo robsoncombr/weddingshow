@@ -214,6 +214,16 @@ def imagesRating(user, id_wedding, id_image):
       image.save()
     return jsonify(image), 200
 
+@mod_weddings.route('/<string:id_wedding>/images/<string:id_image>/messages', methods=['POST'])
+@token_required
+@acl.verify_wedding_images
+def imagesMessages(user, id_wedding, id_image):
+    if request.method == 'POST':
+      image = models.Image.objects().get(id=id_image)
+      image.messages.append({ 'user': user['_id'], 'user_email': user['email'], 'message': request.json['message'], 'date': datetime.utcnow() })
+      image.save()
+    return jsonify(image), 200
+
 @mod_weddings.route('/<string:id_wedding>/images/<string:id_image>/approve', methods=['POST'])
 @token_required
 @acl.verify_wedding_images
